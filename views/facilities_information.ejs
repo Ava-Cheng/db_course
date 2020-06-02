@@ -1,0 +1,72 @@
+<%- include layouts/header.ejs %>
+
+<div id="content">
+    <div id="sidebar">
+        <p>
+        <p>
+        <a href="/paradise_information" rel="nofollow">🔎 樂園資訊</a><p>
+        <a href="/facilities_information" rel="nofollow">🔎 交通資訊</a><p>
+        🔎 設施資訊
+    </div>
+    <div id="body">
+        <div id="map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d7358.5443294266715!2d120.32943932334597!3d22.75527879035616!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1z6auY56ys5LiA!5e0!3m2!1szh-TW!2stw!4v1590987732668!5m2!1szh-TW!2stw" width="500" height="350" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0" id="map"></iframe>
+        </div>
+        <table class="traffic_table" cellpadding='5'>
+            <tr>
+                <td colspan="2" class="traffic_td">01.高雄捷運</td>
+            </tr>
+            <tr>
+                <td><img class="traffic_icon" src="../images/icon/subway.png"></td>
+                <td>
+                    (1) 於R21都會公園站下車，可轉搭以下公車：<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;＊紅58A (不停靠大學路園門口)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;＊紅58B 、97 (行駛路線停靠兩園區門口)<br>
+                    (2) 於R22青埔站下車，可轉搭以下公車：<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;＊98 (行駛路線停靠兩園區門口)<br>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="traffic_td">02.台灣高鐵</td>
+            </tr>
+            <tr>
+                <td><img class="traffic_icon" src="../images/icon/high-speed-train.png"></td>
+                <td>
+                    至高鐵左營站下車後，可轉搭捷運或計程車：<br>
+                    (1) 搭乘捷運：請參考01說明<br>
+                    (2) 搭乘計程車：沿路行經高鐵路-高楠公路-德民路-德民新橋-土庫二路-創新路至本校，車程約15~20分鐘。<br>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="traffic_td">03.火車</td>
+            </tr>
+            <tr>
+                <td><img class="traffic_icon" src="../images/icon/train.png"></td>
+                <td>
+                    至楠梓站下車後，可轉搭公車或計程車：<br>
+                    (1) 搭乘公車 (97、紅58)：車程約15分鐘<br>
+                    (2) 搭乘計程車：車程約10分鐘<br>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="traffic_td">04.長途客運(包含國光、統聯、和欣等)</td>
+            </tr>
+            <tr>
+                <td><img class="traffic_icon" src="../images/icon/bus.png"></td>
+                <td>
+                    至中山高速公路之楠梓交流道附近客運停靠站下車，轉搭公車或計程車。
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="traffic_td">05.自行開車</td>
+            </tr>
+            <tr>
+                <td><img class="traffic_icon" src="../images/icon/car.png"></td>
+                <td>
+                    至中山高速公路楠梓交流道下高速公路，依沿路指標由卓越路門口進入園區。
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<%- include layouts/footer.ejs %>

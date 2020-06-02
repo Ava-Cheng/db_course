@@ -17,7 +17,7 @@ var mysql = require('mysql');
 //port設定
 app.set('port', process.env.PORT || 3000);
 
-//使用 ejs template engine
+// 使用 ejs template engine
 app.set('views', path.join(__dirname, 'views')); //設計頁面模板位置，在views子目錄下
 app.set('view engine', 'ejs'); //表明要使用的模板引擎(樣板引擎，Template Engine)是ejs
 
@@ -26,10 +26,10 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride());
-//隱藏標頭
+// 隱藏標頭
 app.use(helmet());
 
-//development only
+// development only
 if ('development' == app.get('env')) {
     app.use(express.errorHandler());
 }
@@ -45,15 +45,21 @@ app.use(
     }, 'pool')
 );
 
-//routes
+// routes
+// 首頁
 app.get('/', routes.index);
-//ERROR
+// 樂園資訊
+app.get('/paradise_information', routes.paradise_information);
+// 交通資訊
+app.get('/facilities_information', routes.facilities_information);
+
+// ERROR
 app.get('*', routes.error)
 
 app.use(app.router);
 
 http.createServer(app).listen(app.get('port'), function(req, res) {
-    //建立app instance
-    //服務器通過app.listen（3000）;啟動，監聽3000端口。
+    // 建立app instance
+    // 服務器通過app.listen（3000）;啟動，監聽3000端口。
     console.log('Express server listening on port ' + app.get('port'));
 });
