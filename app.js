@@ -54,9 +54,12 @@ app.get('/paradise_information', routes.paradise_information);
 // 交通資訊
 app.get('/facilities_information', routes.facilities_information);
 // 帳號管理
-// 註冊
+// 會員註冊
 app.get('/user_reg', accountManagement.user_reg);
-app.post('/save_reg', accountManagement.save_reg);
+app.post('/user_save_reg', accountManagement.user_save_reg);
+// 管理員註冊
+app.get('/admin_reg', accountManagement.admin_reg);
+app.post('/admin_save_reg', accountManagement.admin_save_reg);
 // 錯誤訊息
 app.post('/accountManagement/error_msg', accountManagement.accountManagement_errorMsg);
 // ERROR

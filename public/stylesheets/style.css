@@ -68,11 +68,13 @@ a{
     margin:30px auto 8px auto;
     display:block;
 }
-.paradise_information,.facilities_information,.traffic_information{
+.paradise_information,.facilities_information,.traffic_information,.reg_btn{
     -webkit-appearance:button;
     width:80px;
     height:40px;
     border-radius:10px;
+    color: rgb(255, 255, 255);
+    background: rgba(25, 122, 248, 0.904);
 }
 #index_button{
     width:100%;
@@ -140,12 +142,16 @@ a{
     display:block;
 }
 
-/*會員註冊*/
+/*註冊*/
 #reg_table{
     margin:0px auto 0px auto;
 }
 .td_center{
     vertical-align: center;
+    text-align: center;
+}
+.errorMsg{
+    color: darkred;
     text-align: center;
 }
 

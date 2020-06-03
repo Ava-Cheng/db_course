@@ -12,9 +12,10 @@ function error_msg(frm,data){
         cache: false,
         timeout: 60,
         success: function (msg) {
-            alert(msg.msg);
+            $("#errorMsg").html(msg.msg);
         },
         error: function (error) {
+            $("#errorMsg").html("");
             frm.submit();
         }
     })
@@ -63,9 +64,9 @@ window.onload = function initSet() {
             $("#name").blur(function () {
                 var name = $("#name").val();
                 if (!ckName.test(name)) {
-                    alert("您所輸入的'姓名'格式錯誤，請再次檢查。");
+                    $("#errorMsg").html("您所輸入的'姓名'格式錯誤，請再次檢查。");
                 } else if (name.length > 40) {
-                    alert("您所輸入的'姓名'最大長度為40字，請再次檢查。");
+                    $("#errorMsg").html("您所輸入的'姓名'最大長度為40字，請再次檢查。");
                 } 
             })
         }
@@ -74,7 +75,7 @@ window.onload = function initSet() {
             $("#birth").blur(function () {
                 var birth = $("#birth").val();
                 if (birth=="") {
-                    alert("請選擇生日。");
+                    $("#errorMsg").html("請選擇生日。");
                 } 
             })
         }
@@ -83,9 +84,9 @@ window.onload = function initSet() {
             $("#phone").blur(function () {
                 var phone = $("#phone").val();
                 if (!ckPhone.test(phone)) {
-                    alert("您所輸入的'行動電話'格式錯誤，請再次檢查。");
+                    $("#errorMsg").html("您所輸入的'行動電話'格式錯誤，請再次檢查。");
                 } else if (phone.length > 15) {
-                    alert("您所輸入的'行動電話'最大長度為15字，請再次檢查。");
+                    $("#errorMsg").html("您所輸入的'行動電話'最大長度為15字，請再次檢查。");
                 } 
             })
         }
@@ -94,9 +95,9 @@ window.onload = function initSet() {
             $("#email").blur(function () {
                 var email = $("#email").val();
                 if (!ckEmail.test(email)) {
-                    alert("您所輸入的'Email'格式錯誤，請再次檢查。");
+                    $("#errorMsg").html("您所輸入的'Email'格式錯誤，請再次檢查。");
                 } else if (email.length > 150) {
-                    alert("您所輸入的'Email'最大長度為150字，請再次檢查。");
+                    $("#errorMsg").html("您所輸入的'Email'最大長度為150字，請再次檢查。");
                 } 
             })
         }
@@ -105,7 +106,7 @@ window.onload = function initSet() {
             $("#password").blur(function () {
                 var password = $("#password").val();
                 if (password == "") {
-                    alert("請輸入有效密碼，請再次檢查。");
+                    $("#errorMsg").html("請輸入有效密碼，請再次檢查。");
                 }
             })
         }
@@ -115,7 +116,7 @@ window.onload = function initSet() {
                 var password_repeat = $("#password_repeat").val();
                 var password = $("#password").val();
                 if (password_repeat != password) {
-                    alert("兩次輸入密碼不相符，請再次檢查。");
+                    $("#errorMsg").html("兩次輸入密碼不相符，請再次檢查。");
                 }
             })
         }
