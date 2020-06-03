@@ -9,6 +9,7 @@ var path = require('path');
 var app = express();
 //routes require
 var routes = require('./routes');
+var accountManagement = require('./routes/accountManagement');
 //DB使用
 var fs = require('fs');
 var ini = require('ini');
@@ -52,7 +53,12 @@ app.get('/', routes.index);
 app.get('/paradise_information', routes.paradise_information);
 // 交通資訊
 app.get('/facilities_information', routes.facilities_information);
-
+// 帳號管理
+// 註冊
+app.get('/user_reg', accountManagement.user_reg);
+app.post('/save_reg', accountManagement.save_reg);
+// 錯誤訊息
+app.post('/accountManagement/error_msg', accountManagement.accountManagement_errorMsg);
 // ERROR
 app.get('*', routes.error)
 

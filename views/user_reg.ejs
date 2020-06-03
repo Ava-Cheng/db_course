@@ -1,0 +1,57 @@
+<%- include layouts/header.ejs %>
+
+<div id="content">
+    <div id="sidebar">
+        <p>
+        <p>
+        <a href="/paradise_information" rel="nofollow">🔎 樂園資訊</a><p>
+        <a href="/facilities_information" rel="nofollow">🔎 交通資訊</a><p>
+        🔎 設施資訊
+    </div>
+    <div id="body">
+        <form method="post" id="regForm" name="regForm" action="/save_reg">
+            <table id="reg_table" cellpadding='5'>
+                <tr>
+                    <th colspan="2" class="td_center">會員註冊</th>
+                </tr>
+                <tr>
+                    <td>姓名</td>
+                    <td><input type="text" name="name" id="name" maxlength="40"/>&nbsp;ex.王小明</td>
+                </tr>
+                <tr>
+                    <td>生日</td>
+                    <td><input type="date" name="birth" id="birth" max="2020-01-01"/>&nbsp;ex.1989/02/02</td>
+                </tr>
+                <tr>
+                    <td>行動電話</td>
+                    <td><input type="text" name="phone" id="phone" maxlength="15"/>&nbsp;ex.0912345678</td>
+                </tr>
+                <tr>
+                    <td>性別</td>
+                    <td>
+                        <input type="radio" name="sex" value="男" checked>男性
+                        <input type="radio" name="sex" value="女">女性<br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>信箱</td>
+                    <td><input type="text" name="email" id="email" maxlength="150"/>&nbsp;ex.test@gmail.com</td>
+                </tr>
+                <tr>
+                    <td>密碼</td>
+                    <td><input type="password" name="password" id="password"/></td>
+                </tr>
+                <tr>
+                    <td>確認密碼</td>
+                    <td><input type="password" name="password_repeat" id="password_repeat"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="td_center">
+                        <input type="button" name="registerBtn" id="registerBtn" value="✎ 註冊帳號" onclick="ckform_reg()">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<%- include layouts/footer.ejs %>

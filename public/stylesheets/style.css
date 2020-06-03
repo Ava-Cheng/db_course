@@ -140,6 +140,15 @@ a{
     display:block;
 }
 
+/*會員註冊*/
+#reg_table{
+    margin:0px auto 0px auto;
+}
+.td_center{
+    vertical-align: center;
+    text-align: center;
+}
+
 /*按鈕*/
 .cancel{
     -webkit-appearance:button;
