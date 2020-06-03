@@ -63,8 +63,8 @@ a{
 
 /*首頁*/
 #amusement_park{
-    width:884px;
-    height:466px;
+    width:687px;
+    height:352px;
     margin:30px auto 8px auto;
     display:block;
 }
@@ -88,13 +88,14 @@ a{
 }
 
 /*樂園資訊、交通資訊*/
-#sidebar{
+#index_sidebar{
     width:200px;
     float:left;
     height:150px;
     text-align:center;
     margin-top: 50px;
     margin-left: 30px;
+    margin-bottom: 60px;
     padding-left: -20px;
     font-size: 16px;
     background: #a3a2a254;
@@ -153,6 +154,22 @@ a{
 .errorMsg{
     color: darkred;
     text-align: center;
+}
+
+/*管理員*/
+/*帳號管理*/
+#admin_sidebar{
+    width:200px;
+    float:left;
+    height:305px;
+    text-align:center;
+    margin-top: 50px;
+    margin-left: 30px;
+    margin-bottom: 60px;
+    padding-left: -20px;
+    font-size: 16px;
+    background: #a3a2a254;
+    border-radius:10px;
 }
 
 /*按鈕*/

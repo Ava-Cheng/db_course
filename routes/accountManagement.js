@@ -44,19 +44,19 @@ exports.user_save_reg = function (req, res) {
             connection.query("INSERT INTO User set ? ", user_data, function (err, rows) {
                 if (err) {
                     console.log("Error inserting（routes：/user_reg): %s ", err);
-                    res.redirect('/user_reg');
+                    res.redirect('/reg/user');
                 }
             });
             connection.query("INSERT INTO User_Name set ? ", user_name_data, function (err, rows) {
                 if (err) {
                     console.log("Error inserting（routes：/user_reg): %s ", err);
-                    res.redirect('/user_reg');
+                    res.redirect('/reg/user');
                 } 
             });
             connection.query("INSERT INTO User_Member set ? ", user_member_data, function (err, rows) {
                 if (err) {
                     console.log("Error inserting（routes：/user_reg): %s ", err);
-                    res.redirect('/user_reg');
+                    res.redirect('/reg/user');
                 } 
             });
             // TODO:改為登陸
@@ -91,7 +91,7 @@ exports.admin_save_reg = function (req, res) {
                 var no = Number(rows[0].No)+1;
             }
             if (err) {
-                console.log("Error Selecting（routes：/admin_save_reg）: %s ", err);
+                console.log("Error Selecting（routes：/reg/admin_save）: %s ", err);
             } 
             var admin_data = {
                 Email: email,
@@ -109,20 +109,20 @@ exports.admin_save_reg = function (req, res) {
             };
             connection.query("INSERT INTO Admin set ? ", admin_data, function (err, rows) {
                 if (err) {
-                    console.log("Error inserting（routes：/admin_reg): %s ", err);
-                    res.redirect('/admin_reg');
+                    console.log("Error inserting（routes：/reg/admin): %s ", err);
+                    res.redirect('/reg/admin');
                 }
             });
             connection.query("INSERT INTO Admin_Name set ? ", admin_name_data, function (err, rows) {
                 if (err) {
-                    console.log("Error inserting（routes：/admin_reg): %s ", err);
-                    res.redirect('/admin_reg');
+                    console.log("Error inserting（routes：/reg/admin): %s ", err);
+                    res.redirect('/reg/admin');
                 } 
             });
             connection.query("INSERT INTO Admin_Member set ? ", admin_member_data, function (err, rows) {
                 if (err) {
-                    console.log("Error inserting（routes：/admin_reg): %s ", err);
-                    res.redirect('/admin_reg');
+                    console.log("Error inserting（routes：/reg/admin): %s ", err);
+                    res.redirect('/reg/admin');
                 } 
             });
             // TODO:改為登陸

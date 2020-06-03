@@ -1,15 +1,9 @@
 <%- include layouts/header.ejs %>
 
 <div id="content">
-    <div id="sidebar">
-        <p>
-        <p>
-        <a href="/paradise_information" rel="nofollow">🔎 樂園資訊</a><p>
-        <a href="/facilities_information" rel="nofollow">🔎 交通資訊</a><p>
-        🔎 設施資訊
-    </div>
+    <%- include layouts/index_side.ejs %>
     <div id="body">
-        <form method="post" id="regForm" name="regForm" action="/user_save_reg">
+        <form method="post" id="regForm" name="regForm" action="/reg/user_save">
             <table id="reg_table" cellpadding='5'>
                 <tr>
                     <th colspan="2" class="td_center">會員註冊</th>
@@ -47,7 +41,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="td_center">
-                        &nbsp; <input type="button" name="cancel" value="✘ 取消" class="cancel" onClick="back_index();">
+                        &nbsp; <input type="button" name="cancel" value="✘ 取消" class="cancel" onClick="go_back();">
                         <input type="button" name="registerBtn" id="registerBtn" class="reg_btn" value="✎ 註冊帳號" onclick="ckform_reg()">
                     </td>
                 </tr>

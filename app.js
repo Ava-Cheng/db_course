@@ -10,6 +10,7 @@ var app = express();
 //routes require
 var routes = require('./routes');
 var accountManagement = require('./routes/accountManagement');
+var admin = require('./routes/admin');
 //DB使用
 var fs = require('fs');
 var ini = require('ini');
@@ -53,15 +54,21 @@ app.get('/', routes.index);
 app.get('/paradise_information', routes.paradise_information);
 // 交通資訊
 app.get('/facilities_information', routes.facilities_information);
+
 // 帳號管理
 // 會員註冊
-app.get('/user_reg', accountManagement.user_reg);
-app.post('/user_save_reg', accountManagement.user_save_reg);
+app.get('/reg/user', accountManagement.user_reg);
+app.post('/reg/user_save', accountManagement.user_save_reg);
 // 管理員註冊
-app.get('/admin_reg', accountManagement.admin_reg);
-app.post('/admin_save_reg', accountManagement.admin_save_reg);
+app.get('/reg/admin', accountManagement.admin_reg);
+app.post('/reg/admin_save', accountManagement.admin_save_reg);
 // 錯誤訊息
 app.post('/accountManagement/error_msg', accountManagement.accountManagement_errorMsg);
+
+// 管理員
+// 帳號管理
+app.get('/admin/account_view', admin.admin_account_view);
+
 // ERROR
 app.get('*', routes.error)
 

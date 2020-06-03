@@ -54,9 +54,6 @@ function ckform_reg() {
 }
 
 window.onload = function initSet() {
-    // 防止使用者按上一頁
-    window.history.forward(1);
-
     $(document).ready(function () {
         // 即時驗證
         // 驗證姓名
@@ -67,7 +64,9 @@ window.onload = function initSet() {
                     $("#errorMsg").html("您所輸入的'姓名'格式錯誤，請再次檢查。");
                 } else if (name.length > 40) {
                     $("#errorMsg").html("您所輸入的'姓名'最大長度為40字，請再次檢查。");
-                } 
+                } else{
+                    $("#errorMsg").html("");
+                }
             })
         }
         // 驗證生日
@@ -76,7 +75,9 @@ window.onload = function initSet() {
                 var birth = $("#birth").val();
                 if (birth=="") {
                     $("#errorMsg").html("請選擇生日。");
-                } 
+                } else{
+                    $("#errorMsg").html("");
+                }
             })
         }
         // 驗證行動電話
@@ -87,7 +88,9 @@ window.onload = function initSet() {
                     $("#errorMsg").html("您所輸入的'行動電話'格式錯誤，請再次檢查。");
                 } else if (phone.length > 15) {
                     $("#errorMsg").html("您所輸入的'行動電話'最大長度為15字，請再次檢查。");
-                } 
+                } else{
+                    $("#errorMsg").html("");
+                }
             })
         }
         // 驗證信箱
@@ -98,7 +101,9 @@ window.onload = function initSet() {
                     $("#errorMsg").html("您所輸入的'Email'格式錯誤，請再次檢查。");
                 } else if (email.length > 150) {
                     $("#errorMsg").html("您所輸入的'Email'最大長度為150字，請再次檢查。");
-                } 
+                } else{
+                    $("#errorMsg").html("");
+                }
             })
         }
         // 驗證密碼
@@ -107,6 +112,8 @@ window.onload = function initSet() {
                 var password = $("#password").val();
                 if (password == "") {
                     $("#errorMsg").html("請輸入有效密碼，請再次檢查。");
+                }else{
+                    $("#errorMsg").html("");
                 }
             })
         }
@@ -117,6 +124,8 @@ window.onload = function initSet() {
                 var password = $("#password").val();
                 if (password_repeat != password) {
                     $("#errorMsg").html("兩次輸入密碼不相符，請再次檢查。");
+                }else{
+                    $("#errorMsg").html("");
                 }
             })
         }
