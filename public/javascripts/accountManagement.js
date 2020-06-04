@@ -3,10 +3,10 @@ var ckName = /^[A-Za-z\u4e00-\u9fa5]+$/;// 姓名格式驗證
 var ckPhone = /\d{10,15}$/;// 電話格式檢查
 
 // 錯誤訊息接收
-function error_msg(frm,data){
+function reg_error_msg(frm,data){
     $.ajax({
         data: data,
-        url: '/accountManagement/error_msg',
+        url: '/reg/error_msg',
         dataType: 'json',
         type: 'POST',
         cache: false,
@@ -30,11 +30,11 @@ function ckform_reg() {
     var name = frm.name.value;
     var phone = frm.phone.value;
     var birth = frm.birth.value;
-    if (ckName.test(name) && name.length <= 40 && birth!="" && ckPhone.test(phone) && phone.length <= 15 && ckEmail.test(email) && email.length <= 150 && password != "" && password == password_repeat) {
+    if (((frm.index_account_view.value =="exist")||(frm.index_account_view.value !="exist" && password != "")) && ckName.test(name) && name.length <= 40 && birth!="" && ckPhone.test(phone) && phone.length <= 15 && ckEmail.test(email) && email.length <= 150  && password == password_repeat){
         // 錯誤訊息接收
         data={"email":email,"password":password,"password_repeat":password_repeat,"name":name,"phone":phone,"birth":birth};
-        error_msg(frm,data);
-    } else if (!ckName.test(name)) {
+        reg_error_msg(frm,data);
+    }else if (!ckName.test(name)) {
         alert("您所輸入的'姓名'格式錯誤，請再次檢查。");
     } else if (name.length > 40) {
         alert("您所輸入的'姓名'長度過長，請再次檢查。");
@@ -44,7 +44,7 @@ function ckform_reg() {
         alert("您所輸入的'行動電話'格式錯誤，請再次檢查。");
     } else if (!ckEmail.test(email) || email.length > 150) {
         alert("您所輸入的'Email'格式錯誤，請再次檢查。");
-    } else if (password == "") {
+    } else if (password == "" && frm.index_account_view.value!="exist") {
         alert("請輸入有效密碼，請再次檢查。");
     } else if (password_repeat != password) {
         alert("兩次輸入密碼不相符，請再次檢查。");
@@ -107,13 +107,15 @@ window.onload = function initSet() {
             })
         }
         // 驗證密碼
-        if ($("#password")) {
+        if ($("#password") && $("#index_account_view").val()!="exist") {
             $("#password").blur(function () {
                 var password = $("#password").val();
-                if (password == "") {
-                    $("#errorMsg").html("請輸入有效密碼，請再次檢查。");
-                }else{
-                    $("#errorMsg").html("");
+                if($("#index_account_view").val()!="exist"){
+                    if (password == "") {
+                        $("#errorMsg").html("請輸入有效密碼，請再次檢查。");
+                    }else{
+                        $("#errorMsg").html("");
+                    }
                 }
             })
         }

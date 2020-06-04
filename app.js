@@ -16,6 +16,8 @@ var fs = require('fs');
 var ini = require('ini');
 var db = ini.parse(fs.readFileSync('./config/db.ini', 'utf8'));
 var mysql = require('mysql');
+//cookie
+var cookie = require("cookie-parser");
 //port設定
 app.set('port', process.env.PORT || 3000);
 
@@ -30,6 +32,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride());
 // 隱藏標頭
 app.use(helmet());
+//cookie
+app.use(cookie());
 
 // development only
 if ('development' == app.get('env')) {
@@ -56,18 +60,27 @@ app.get('/paradise_information', routes.paradise_information);
 app.get('/facilities_information', routes.facilities_information);
 
 // 帳號管理
+// TODO:user_save_reg 要改為 user_reg_save
 // 會員註冊
 app.get('/reg/user', accountManagement.user_reg);
 app.post('/reg/user_save', accountManagement.user_save_reg);
 // 管理員註冊
 app.get('/reg/admin', accountManagement.admin_reg);
 app.post('/reg/admin_save', accountManagement.admin_save_reg);
-// 錯誤訊息
-app.post('/accountManagement/error_msg', accountManagement.accountManagement_errorMsg);
+// 註冊錯誤訊息
+app.post('/reg/error_msg', accountManagement.errorMsg);
 
 // 管理員
+// 管理員登入
+app.get('/admin/login', admin.admin_login);
+app.post('/admin/admin_do_login', admin.admin_do_login);
+// 登入錯誤訊息
+app.post('/admin/error_msg', admin.errorMsg);
 // 帳號管理
 app.get('/admin/account_view', admin.admin_account_view);
+app.post('/admin/account_view_save', admin.admin_account_view_save);
+// 會員門票檢視
+app.get('/admin/member_tickets', admin.member_tickets);
 
 // ERROR
 app.get('*', routes.error)

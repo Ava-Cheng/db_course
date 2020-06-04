@@ -3,41 +3,54 @@
 <div id="content">
     <%- include layouts/admin_side.ejs %>
     <div id="body">
-        <table id="reg_table" cellpadding='5'>
-            <tr>
-                <th colspan="2" class="td_center">個人資訊編輯</th>
-            </tr>
-            <tr>
-                <td>姓名</td>
-                <td><input type="text" name="name" id="name" maxlength="40" value="<%=data[0].Name%>"/>&nbsp;ex.王小明</td>
-            </tr>
-            <tr>
-                <td>生日</td>
-                <td><input type="date" name="birth" id="birth" max="2020-01-01" value="<%=birth%>"/>&nbsp;ex.1989/02/02</td>
-            </tr>
-            <tr>
-                <td>行動電話</td>
-                <td><input type="text" name="phone" id="phone" maxlength="15" value="<%=data[0].Phone%>"/>&nbsp;ex.0912345678</td>
-            </tr>
-            <tr>
-                <td>性別</td>
-                <td>
-                    <input type="text" name="sex" id="sex" value="<%=data[0].Sex%>" disabled/>
-                </td>
-            </tr>
-            <tr>
-                <td>信箱</td>
-                <td>
-                    <input type="text" name="email" id="email" maxlength="150" value="<%=data[0].Email%>"/>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="td_center">
-                    &nbsp; <input type="button" name="cancel" value="✘ 取消" class="cancel" onClick="go_back();">
-                    <input type="button" name="registerBtn" id="registerBtn" class="reg_btn" value="✎ 編輯" onclick="ckform_reg()">
-                </td>
-            </tr>
-        </table>
+        <form method="post" id="regForm" name="regForm" action="/admin/account_view_save">
+            <input type="hidden" id="index_account_view" name="index_account_view" value="exist"  readonly="readonly" required>
+            <table id="reg_table" cellpadding='5'>
+                <tr>
+                    <td>姓名</td>
+                    <td><input type="text" name="name" id="name" maxlength="40" value="<%=data[0].Name%>"/>&nbsp;ex.王小明</td>
+                </tr>
+                <tr>
+                    <td>生日</td>
+                    <td><input type="date" name="birth" id="birth" max="2020-01-01" value="<%=birth%>"/>&nbsp;ex.1989/02/02</td>
+                </tr>
+                <tr>
+                    <td>行動電話</td>
+                    <td><input type="text" name="phone" id="phone" maxlength="15" value="<%=data[0].Phone%>"/>&nbsp;ex.0912345678</td>
+                </tr>
+                <tr>
+                    <td>性別</td>
+                    <td>
+                        <input type="text" name="sex" id="sex" value="<%=data[0].Sex%>" disabled/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>信箱</td>
+                    <td>
+                        <input type="text" name="email" id="email" maxlength="150" value="<%=data[0].Email%>"/>&nbsp;ex.test@gmail.com
+                    </td>
+                </tr>
+                <tr>
+                    <td>密碼</td>
+                    <td>
+                        <input type="password" name="password" id="password"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>確認密碼</td>
+                    <td>
+                        <input type="password" name="password_repeat" id="password_repeat"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="td_center">
+                        &nbsp; <input type="button" name="cancel" value="✘ 取消" class="cancel" onClick="go_back();">
+                        <input type="button" name="registerBtn" id="registerBtn" class="reg_btn" value="✎ 編輯" onclick="ckform_reg()">
+                    </td>
+                </tr>
+            </table>
+            <p id="errorMsg" class="errorMsg"></p>
+        </form>
     </div>
 </div>
 

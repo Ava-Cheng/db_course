@@ -10,6 +10,7 @@
     <script type="text/javascript" src="/../javascripts/all.js"></script>
     <script type="text/javascript" src="/../javascripts/index.js"></script>
     <script type="text/javascript" src="/../javascripts/accountManagement.js"></script>
+    <script type="text/javascript" src="/../javascripts/admin.js"></script>
 </head>
 
 <body>
@@ -21,6 +22,14 @@
                 </a>
             </div>
             <div id="action">
-                👤管理員登入  |  👥會員登入  |  <a href="/reg/user" rel="nofollow">✍會員註冊</a>   |  <a href="/" rel="nofollow">🏠️回首頁</a>
+                <%if(typeof(name) !== 'undefined'){%>
+                    <%=name%>| <span id="logout" onclick="logoutWindow()">登出  |  </span>
+                <%}else{%>
+                    <a href="/admin/login" rel="nofollow">👤管理員登入</a>  |  <a href="/user/login" rel="nofollow">👥會員登入</a>  |  <a href="/reg/user" rel="nofollow">✍會員註冊</a>
+                <%}%>
+                |  <a href="/" rel="nofollow">🏠️回首頁</a>
             </div>
+        </div>
+        <div id="title">
+            <span id="titleLable"><%=page_title%></span>
         </div>

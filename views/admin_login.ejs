@@ -1,0 +1,30 @@
+<%- include layouts/header.ejs %>
+
+<div id="content">
+    <%- include layouts/index_side.ejs %>
+    <div id="body">
+        <form method="post" id="loginForm" name="loginForm" action="/admin/admin_do_login">
+            <table id="login_table" cellpadding='5'>
+                <tr>
+                    <td>信箱</td>
+                    <td>
+                        <input type="text" name="email" id="email" maxlength="150"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>密碼</td>
+                    <td>
+                        <input type="password" name="password" id="password"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="td_center">
+                        <input type="button" id="loginBtn" name="loginBtn" class="reg_btn" value="🔑 登入" onclick="ckform_login()">
+                    </td>
+                </tr>
+            </table>
+            <p id="errorMsg" class="errorMsg"></p>
+        </form>
+    </div>
+</div>
+<%- include layouts/footer.ejs %>
