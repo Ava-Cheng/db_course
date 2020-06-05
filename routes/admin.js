@@ -67,7 +67,8 @@ exports.member_tickets = function (req, res) {
         res.redirect('/admin/login');
     }else{
         res.render('member_tickets', {
-            page_title: "會員門票檢視"
+            page_title: "會員門票檢視",
+            admin_name:req.cookies.admin.name
         });
     }
 }
@@ -94,7 +95,8 @@ exports.admin_account_view = function (req, res) {
                         res.render('admin_account_view', {
                             page_title: "管理員帳號管理",
                             data: rows,
-                            birth: Birth
+                            birth: Birth,
+                            admin_name:req.cookies.admin.name
                         });
                     }
                 }
