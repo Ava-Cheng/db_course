@@ -1,6 +1,6 @@
 var crypto = require('crypto');
 
-//設置cookie
+// 設置cookie
 function setCookie(res,name,admin_no) {
     // httpOnly 確保只透過HTTP(S) 傳送Cookie，而不透過用戶端JavaScript 傳送
     return res.cookie("admin", {"name":name,"no":admin_no},  {maxAge: 1000*60*60*60 , httpOnly: true});//登陸成功後將使用者和密碼寫入Cookie，maxAge為cookie過期時間;
@@ -14,9 +14,15 @@ function errorPrint(text, error) {
 
 // 管理員登入
 exports.admin_login = function (req, res) {
-    res.render('admin_login', {
-        page_title: "管理員登入"
-    });
+    // 如果已經登入則直接跳轉
+    if (!req.cookies.admin || req.cookies.admin == undefined) {
+        res.render('admin_login', {
+            page_title: "管理員登入"
+        });
+    }else{
+        res.redirect('/admin/member_tickets');
+    }
+    
 }
 
 // 執行管理員登入
@@ -75,7 +81,7 @@ exports.admin_account_view = function (req, res) {
         req.getConnection(function (err, connection) {
             // 依據No去找出相關管理員資料
             // TODO:No要依據登入去做改變
-            no=1
+            no=req.cookies.admin.no;
             connection.query('SELECT * FROM Admin Inner join Admin_Member on Admin_Member.Admin_No ' +
                 'Inner join Admin_Name on Admin_Name.Admin_No ' +
                 'WHERE Admin.No = ? AND Admin_Member.Admin_No = ? AND Admin_Name.Admin_No = ?', [1,1,1], function (err, rows) {
@@ -101,16 +107,19 @@ exports.admin_account_view = function (req, res) {
 exports.admin_account_view_save = function (req, res) {
     var input = JSON.parse(JSON.stringify(req.body));
     // TODO:no之後要自動帶入
-    var no=1;
+    var no=req.cookies.admin.no;
     // 不一定會更改密碼
     if(input.password==""){
         var admin_data = {
             Email: input.email
         };
     }else{
+        var md5 = crypto.createHash('md5');
+        var password = input.password;
+        password = md5.update(password).digest('hex');
         var admin_data = {
             Email: input.email,
-            Password: input.password
+            Password: password
         };
     }
     var admin_name_data = {
@@ -118,26 +127,28 @@ exports.admin_account_view_save = function (req, res) {
     };
     var admin_member_data = {
         Birth: input.birth,
-        Phone: input.Phone
+        Phone: input.phone
     };
-    connection.query("UPDATE Admin set ? WHERE No = ? ", [admin_data , no], function (err, row) {
-        if (err) {
-            errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err);
-        }
-    });
-    connection.query("UPDATE Admin_Member set ? WHERE Admin_No = ? ", [admin_member_data , no], function (err, row) {
-        if (err) {
-            errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err);
-        }
-    });
-    connection.query("UPDATE Admin_Name set ? WHERE Admin_No = ? ", [admin_name_data , no], function (err, row) {
-        if (err) {
-            errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err);
-        }
-    });
-    res.render('member_tickets', {
-        page_title: "會員門票檢視"
-    });
+    req.getConnection(function (err, connection) {
+        connection.query("UPDATE Admin set ? WHERE No = ? ", [admin_data , no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err);
+            }
+        });
+        connection.query("UPDATE Admin_Member set ? WHERE Admin_No = ? ", [admin_member_data , no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err);
+            }
+        });
+        connection.query("UPDATE Admin_Name set ? WHERE Admin_No = ? ", [admin_name_data , no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err);
+            }
+        });
+        res.render('member_tickets', {
+            page_title: "會員門票檢視"
+        });
+    })
 }
 
 //判斷登入資訊是否正確，顯示錯誤訊息
