@@ -74,6 +74,8 @@ app.post('/reg/error_msg', accountManagement.errorMsg);
 // 管理員登入
 app.get('/admin/login', admin.admin_login);
 app.post('/admin/admin_do_login', admin.admin_do_login);
+// 管理員登出
+app.get('/admin/logout', admin.admin_logout);
 // 登入錯誤訊息
 app.post('/admin/error_msg', admin.errorMsg);
 // 帳號管理

@@ -61,6 +61,13 @@ exports.admin_do_login = function (req, res) {
     
 }
 
+//登出
+exports.admin_logout = function (req, res) {
+    //刪除cookie
+    res.clearCookie('admin');
+    res.redirect('/admin/login');
+};
+
 // 會員門票檢視
 exports.member_tickets = function (req, res) {
     //如果cookies不存在，直接輸入網址，則導回登入頁面
