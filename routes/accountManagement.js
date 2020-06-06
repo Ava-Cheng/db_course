@@ -2,8 +2,14 @@ var crypto = require('crypto');
 
 // 會員註冊
 exports.user_reg = function (req, res) {
+    if (!req.cookies.admin || req.cookies.admin == undefined) {
+        admin_name="";
+    }else{
+        admin_name=req.cookies.admin.name;
+    }
     res.render('user_reg', {
-        page_title: "會員註冊"
+        page_title: "會員註冊",
+        admin_name:admin_name
     });
 };
 
@@ -75,8 +81,14 @@ exports.user_save_reg = function (req, res) {
 
 // 管理員註冊
 exports.admin_reg = function (req, res) {
+    if (!req.cookies.admin || req.cookies.admin == undefined) {
+        admin_name="";
+    }else{
+        admin_name=req.cookies.admin.name;
+    }
     res.render('admin_reg', {
-        page_title: "管理員註冊"
+        page_title: "管理員註冊",
+        admin_name:admin_name
     });
 };
 

@@ -17,7 +17,8 @@ exports.admin_login = function (req, res) {
     // 如果已經登入則直接跳轉
     if (!req.cookies.admin || req.cookies.admin == undefined) {
         res.render('admin_login', {
-            page_title: "管理員登入"
+            page_title: "管理員登入",
+            admin_name:""
         });
     }else{
         res.redirect('/admin/member_tickets');
@@ -148,7 +149,8 @@ exports.admin_account_view_save = function (req, res) {
             }
         });
         res.render('member_tickets', {
-            page_title: "會員門票檢視"
+            page_title: "會員門票檢視",
+            admin_name:req.cookies.admin.name
         });
     })
 }

@@ -23,8 +23,8 @@
                 </a>
             </div>
             <div id="action">
-                <%if(typeof(admin_name) !== 'undefined'){%>
-                    管理員：<%=admin_name%> | <span id="logout" onclick="logoutWindow()">登出</span>
+                <%if(admin_name !== ''){%>
+                    管理員：<%=admin_name%> 您好 | <span id="logout" onclick="logoutWindow()">🔓登出</span>
                 <%}else{%>
                     <a href="/admin/login" rel="nofollow">👤管理員登入</a>  |  <a href="/user/login" rel="nofollow">👥會員登入</a>  |  <a href="/reg/user" rel="nofollow">✍會員註冊</a>
                 <%}%>
