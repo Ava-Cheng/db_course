@@ -83,6 +83,8 @@ app.get('/admin/account_view', admin.admin_account_view);
 app.post('/admin/account_view_save', admin.admin_account_view_save);
 // 會員門票檢視
 app.get('/admin/member_tickets', admin.member_tickets);
+// 會員資料檢視
+app.get('/admin/member_data', admin.member_data);
 
 // ERROR
 app.get('*', routes.error)

@@ -61,24 +61,43 @@ exports.admin_do_login = function (req, res) {
     
 }
 
-//登出
+// 管理員登出
 exports.admin_logout = function (req, res) {
     //刪除cookie
     res.clearCookie('admin');
     res.redirect('/admin/login');
 };
 
-// 會員門票檢視
-exports.member_tickets = function (req, res) {
-    //如果cookies不存在，直接輸入網址，則導回登入頁面
-    if (!req.cookies.admin || req.cookies.admin == undefined) {
-        res.redirect('/admin/login');
-    }else{
-        res.render('member_tickets', {
-            page_title: "會員門票檢視",
-            admin_name:req.cookies.admin.name
-        });
-    }
+// 判斷登入資訊是否正確，顯示錯誤訊息
+exports.errorMsg = function (req, res) {
+    var md5 = crypto.createHash('md5');
+    var email = String(req.body.email);
+    var inputPassword = req.body.password;
+    inputPassword = md5.update(inputPassword).digest('hex');
+    req.getConnection(function (err, connection) {
+        // 依據email撈出管理員帳號相對應資料
+        connection.query("SELECT * FROM Admin WHERE Email = ?", [email], function (err, rows) {
+            if (err) {
+                console.log("Error Selecting（routes：/admin/error_msg）: %s ", err);
+            } 
+            if(inputPassword==undefined){
+                if (rows[0] != undefined) {
+                    res.send({ msg: "此帳號已存在，請直接登入。" });
+                }
+            }else{
+                if (rows == "") {
+                    //查無使用者
+                    res.send({ msg: "此帳號不存在，請前往註冊。" });
+                } else {
+                    var password = rows[0].Password;
+                    if (password != inputPassword) {
+                        //密碼輸入錯誤
+                        res.send({ msg: "密碼輸入錯誤，請再次確認。" });
+                    } 
+                }
+            }
+        })
+    })
 }
 
 // 管理員帳號資料
@@ -162,34 +181,15 @@ exports.admin_account_view_save = function (req, res) {
     })
 }
 
-//判斷登入資訊是否正確，顯示錯誤訊息
-exports.errorMsg = function (req, res) {
-    var md5 = crypto.createHash('md5');
-    var email = String(req.body.email);
-    var inputPassword = req.body.password;
-    inputPassword = md5.update(inputPassword).digest('hex');
-    req.getConnection(function (err, connection) {
-        // 依據email撈出管理員帳號相對應資料
-        connection.query("SELECT * FROM Admin WHERE Email = ?", [email], function (err, rows) {
-            if (err) {
-                console.log("Error Selecting（routes：/admin/error_msg）: %s ", err);
-            } 
-            if(inputPassword==undefined){
-                if (rows[0] != undefined) {
-                    res.send({ msg: "此帳號已存在，請直接登入。" });
-                }
-            }else{
-                if (rows == "") {
-                    //查無使用者
-                    res.send({ msg: "此帳號不存在，請前往註冊。" });
-                } else {
-                    var password = rows[0].Password;
-                    if (password != inputPassword) {
-                        //密碼輸入錯誤
-                        res.send({ msg: "密碼輸入錯誤，請再次確認。" });
-                    } 
-                }
-            }
-        })
-    })
+// 會員門票檢視
+exports.member_tickets = function (req, res) {
+    //如果cookies不存在，直接輸入網址，則導回登入頁面
+    if (!req.cookies.admin || req.cookies.admin == undefined) {
+        res.redirect('/admin/login');
+    }else{
+        res.render('member_tickets', {
+            page_title: "會員門票檢視",
+            admin_name:req.cookies.admin.name
+        });
+    }
 }
