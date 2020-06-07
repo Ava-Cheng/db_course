@@ -78,6 +78,12 @@ a{
     background: #a3a2a254;
     border-radius:10px;
 }
+.nullData{
+    color: #b10101ce;
+}
+table{
+    border-spacing: 0px;
+}
 
 /*首頁*/
 #amusement_park{
@@ -159,6 +165,37 @@ a{
 .errorMsg{
     color: darkred;
     text-align: center;
+}
+
+/*會員資料查看*/
+#member_table{
+    margin-left:auto; 
+    margin-right:auto;
+    overflow:auto;
+}
+#member_table th{
+    background: rgba(25, 122, 248, 0.829);
+    color: rgb(255, 255, 255);
+    height: 30px;
+    border-top: black solid 1px;
+    border-bottom: black solid 1px;
+}
+.member_table_tr:nth-child(even) {
+    background: rgb(223, 222, 222);
+    height: 30px;
+}
+.member_table_tr:nth-child(odd) {
+    background: rgb(255, 255, 255);
+    height: 30px;
+}
+#birth_cheng{
+    border-style:none;
+    background: none;
+    vertical-align: center;
+    text-align: center;
+    width:70px;
+    color: black;
+    cursor: text; 
 }
 
 /*按鈕*/

@@ -198,7 +198,7 @@ exports.member_tickets = function (req, res) {
     }
 }
 
-// 會員門票檢視
+// 會員資料檢視
 exports.member_data = function (req, res) {
     //如果cookies不存在，直接輸入網址，則導回登入頁面
     if (!req.cookies.admin || req.cookies.admin == undefined) {
@@ -206,12 +206,12 @@ exports.member_data = function (req, res) {
     }else{
         req.getConnection(function (err, connection) {
             // 依據email撈出管理員帳號相對應資料
-            connection.query('SELECT * FROM Admin Inner join Admin_Member on Admin_Member.Admin_No ' +
-                'Inner join Admin_Name on Admin_Name.Admin_No ', function (err, rows) {
+            connection.query('SELECT * FROM User User INNER JOIN ( SELECT * FROM User_Name) User_Name ON User.No = User_Name.User_No ' +
+                'INNER JOIN ( SELECT * FROM User_Member) User_Member ON User.No = User_Member.User_No ', function (err, rows) {
                     if (err) {
                         errorPrint("Error Selecting（routes：/admin/member_data): %s ", err);
                     } else{
-                        res.render('member_tickets', {
+                        res.render('member_data', {
                             page_title: "會員資料檢視",
                             admin_name:req.cookies.admin.name,
                             data: rows
