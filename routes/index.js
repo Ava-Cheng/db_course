@@ -38,6 +38,19 @@ exports.facilities_information = function(req, res) {
 };
 
 // 錯誤頁面
+exports.failure = function(req, res) {
+    if (!req.cookies.admin || req.cookies.admin == undefined) {
+        admin_name="";
+    }else{
+        admin_name=req.cookies.admin.name;
+    }
+    res.render('failure', {
+        page_title: "",
+        admin_name:admin_name
+    });
+};
+
+// 404頁面
 exports.error = function(req, res) {
     if (!req.cookies.admin || req.cookies.admin == undefined) {
         admin_name="";

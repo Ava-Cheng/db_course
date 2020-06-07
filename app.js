@@ -8,7 +8,7 @@ var http = require('http');
 var path = require('path');
 var app = express();
 //routes require
-var routes = require('./routes');
+var routes = require('./routes/index');
 var accountManagement = require('./routes/accountManagement');
 var admin = require('./routes/admin');
 //DB使用
@@ -86,6 +86,8 @@ app.get('/admin/member_tickets', admin.member_tickets);
 // 會員資料檢視
 app.get('/admin/member_data', admin.member_data);
 
+// 失敗
+app.get('/failure', routes.failure)
 // ERROR
 app.get('*', routes.error)
 

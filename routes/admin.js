@@ -37,7 +37,7 @@ exports.admin_do_login = function (req, res) {
         // 依據email撈出管理員帳號相對應資料
         connection.query("SELECT * FROM Admin WHERE Email =?", [inputEmail], function (err, rows) {
             if (err) {
-                console.log("Error Selecting（routes：/admin/admin_do_login): %s ", err);
+                errorPrint("Error Selecting（routes：/admin/admin_do_login): %s ", err);
             } else if (rows == "") {
                 // 查無使用者，跳回登入頁面
                 res.redirect('/admin/login');
@@ -50,6 +50,9 @@ exports.admin_do_login = function (req, res) {
                 } else {
                     // 依據email撈出管理員姓名相對應資料
                     connection.query("SELECT * FROM Admin_Name WHERE Admin_No =?", [admin_no], function (err, rows) {
+                        if (err) {
+                            errorPrint("Error Selecting（routes：/admin/admin_do_login): %s ", err);
+                        } 
                         var name=rows[0].Name;
                         setCookie(res,name,admin_no);
                         res.redirect('/admin/member_tickets');
@@ -78,22 +81,23 @@ exports.errorMsg = function (req, res) {
         // 依據email撈出管理員帳號相對應資料
         connection.query("SELECT * FROM Admin WHERE Email = ?", [email], function (err, rows) {
             if (err) {
-                console.log("Error Selecting（routes：/admin/error_msg）: %s ", err);
-            } 
-            if(inputPassword==undefined){
-                if (rows[0] != undefined) {
-                    res.send({ msg: "此帳號已存在，請直接登入。" });
-                }
-            }else{
-                if (rows == "") {
-                    //查無使用者
-                    res.send({ msg: "此帳號不存在，請前往註冊。" });
-                } else {
-                    var password = rows[0].Password;
-                    if (password != inputPassword) {
-                        //密碼輸入錯誤
-                        res.send({ msg: "密碼輸入錯誤，請再次確認。" });
-                    } 
+                errorPrint("Error Selecting（routes：/admin/error_msg）: %s ", err);
+            } else{
+                if(inputPassword==undefined){
+                    if (rows[0] != undefined) {
+                        res.send({ msg: "此帳號已存在，請直接登入。" });
+                    }
+                }else{
+                    if (rows == "") {
+                        //查無使用者
+                        res.send({ msg: "此帳號不存在，請前往註冊。" });
+                    } else {
+                        var password = rows[0].Password;
+                        if (password != inputPassword) {
+                            //密碼輸入錯誤
+                            res.send({ msg: "密碼輸入錯誤，請再次確認。" });
+                        } 
+                    }
                 }
             }
         })
@@ -112,7 +116,7 @@ exports.admin_account_view = function (req, res) {
             no=req.cookies.admin.no;
             connection.query('SELECT * FROM Admin Inner join Admin_Member on Admin_Member.Admin_No ' +
                 'Inner join Admin_Name on Admin_Name.Admin_No ' +
-                'WHERE Admin.No = ? AND Admin_Member.Admin_No = ? AND Admin_Name.Admin_No = ?', [1,1,1], function (err, rows) {
+                'WHERE Admin.No = ? AND Admin_Member.Admin_No = ? AND Admin_Name.Admin_No = ?', [no,no,no], function (err, rows) {
                     // 生日格式轉換為YYYY/MM/DD才可以帶入input date
                     var rowsToJson = (JSON.parse((JSON.stringify(rows)).slice(1, -1)));
                     var Birth = (rowsToJson.Birth).slice(0, -14);
@@ -191,5 +195,29 @@ exports.member_tickets = function (req, res) {
             page_title: "會員門票檢視",
             admin_name:req.cookies.admin.name
         });
+    }
+}
+
+// 會員門票檢視
+exports.member_data = function (req, res) {
+    //如果cookies不存在，直接輸入網址，則導回登入頁面
+    if (!req.cookies.admin || req.cookies.admin == undefined) {
+        res.redirect('/admin/login');
+    }else{
+        req.getConnection(function (err, connection) {
+            // 依據email撈出管理員帳號相對應資料
+            connection.query('SELECT * FROM Admin Inner join Admin_Member on Admin_Member.Admin_No ' +
+                'Inner join Admin_Name on Admin_Name.Admin_No ', function (err, rows) {
+                    if (err) {
+                        errorPrint("Error Selecting（routes：/admin/member_data): %s ", err);
+                    } else{
+                        res.render('member_tickets', {
+                            page_title: "會員資料檢視",
+                            admin_name:req.cookies.admin.name,
+                            data: rows
+                        })
+                    }
+            });
+        })
     }
 }
