@@ -1,4 +1,5 @@
 var crypto = require('crypto');
+var uuid = require('uuid');
 
 // 設置cookie
 function setCookie(res,name,admin_no) {
@@ -6,7 +7,7 @@ function setCookie(res,name,admin_no) {
     return res.cookie("admin", {"name":name,"no":admin_no},  {maxAge: 1000*60*60*60 , httpOnly: true});//登陸成功後將使用者和密碼寫入Cookie，maxAge為cookie過期時間;
 }
 
-//ERROR顯示以及跳轉
+// ERROR顯示以及跳轉
 function errorPrint(text, error) {
     console.log(text, error);
     res.redirect('/');
@@ -124,7 +125,7 @@ exports.admin_account_view = function (req, res) {
                         errorPrint("Error Selecting (routes：/admin/account_view）: %s ", err);
                     } else {
                         res.render('admin_account_view', {
-                            page_title: "管理員帳號管理",
+                            page_title: "帳號管理",
                             data: rows,
                             birth: Birth,
                             admin_name:req.cookies.admin.name
@@ -178,41 +179,38 @@ exports.admin_account_view_save = function (req, res) {
                 errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err);
             }
         });
-        res.render('member_tickets', {
-            page_title: "會員門票檢視",
-            admin_name:req.cookies.admin.name
-        });
+        res.redirect('/admin/member_tickets');
     })
 }
 
-// 會員門票檢視
+// 會員門票查看
 exports.member_tickets = function (req, res) {
     //如果cookies不存在，直接輸入網址，則導回登入頁面
     if (!req.cookies.admin || req.cookies.admin == undefined) {
         res.redirect('/admin/login');
     }else{
         res.render('member_tickets', {
-            page_title: "會員門票檢視",
+            page_title: "會員門票查看",
             admin_name:req.cookies.admin.name
         });
     }
 }
 
-// 會員資料檢視
+// 會員資料查看
 exports.member_data = function (req, res) {
     //如果cookies不存在，直接輸入網址，則導回登入頁面
     if (!req.cookies.admin || req.cookies.admin == undefined) {
         res.redirect('/admin/login');
     }else{
         req.getConnection(function (err, connection) {
-            // 依據email撈出管理員帳號相對應資料
+            // 撈出會員相關資料
             connection.query('SELECT * FROM User User INNER JOIN ( SELECT * FROM User_Name) User_Name ON User.No = User_Name.User_No ' +
                 'INNER JOIN ( SELECT * FROM User_Member) User_Member ON User.No = User_Member.User_No ', function (err, rows) {
                     if (err) {
                         errorPrint("Error Selecting（routes：/admin/member_data): %s ", err);
                     } else{
                         res.render('member_data', {
-                            page_title: "會員資料檢視",
+                            page_title: "會員資料查看",
                             admin_name:req.cookies.admin.name,
                             data: rows
                         })
@@ -220,4 +218,128 @@ exports.member_data = function (req, res) {
             });
         })
     }
+}
+
+// 設施查看
+exports.facility_management = function (req, res) {
+    //如果cookies不存在，直接輸入網址，則導回登入頁面
+    if (!req.cookies.admin || req.cookies.admin == undefined) {
+        res.redirect('/admin/login');
+    }else{
+        req.getConnection(function (err, connection) {
+            // 撈出設施相關資料
+            connection.query('SELECT * FROM Facility Inner join Facility_Check on Facility_Check.No ' +
+                'WHERE Facility_Check.Exist = ?', [0], function (err, rows) {
+                    if (err) {
+                        errorPrint("Error Selecting（routes：/admin/facility_management): %s ", err);
+                    } else{
+                        res.render('facility_management', {
+                            page_title: "設施管理",
+                            admin_name:req.cookies.admin.name,
+                            data: rows
+                        })
+                    }
+            });
+        })
+    }
+}
+
+// 設施新增
+exports.facility_add = function (req, res) {
+    //如果cookies不存在，直接輸入網址，則導回登入頁面
+    if (!req.cookies.admin || req.cookies.admin == undefined) {
+        res.redirect('/admin/login');
+    }else{
+        res.render('facility_add', {
+            page_title: "設施新增",
+            admin_name:req.cookies.admin.name
+        })
+    }
+}
+
+// 上傳圖片
+exports.upload_images = function (req, res) {
+    // 檔案名稱區要跨域使用
+    var formidable = require('formidable');
+    var fs = require('fs');
+    // 創建一個新的傳入表單。
+    var form = new formidable.IncomingForm()
+    // 為輸入的表單字段設置編碼。
+    form.encoding = 'utf-8';
+    // 設置用於放置文件上傳的目錄。
+    form.uploadDir = 'public/images/facility/';
+    // 如果您希望寫入form.uploaddir的文件包含原始文件的擴展名，請設置
+    form.keepExtensions = true;//保留後綴
+    // 限制所有字段（文件除外）可以以字節為單位分配的內存量。如果超過此值，'error'則發出事件。默認大小為20MB。
+    form.maxFieldsSize = 2 * 1024 * 1024;
+    //處理圖片
+    form.parse(req, function (err, fields, files){
+        // 上傳格式判斷
+        file_type=(files.facility_images.name).split(".")[1];
+        // 存入
+        var path = 'public/images/facility/'
+        global.filename = uuid.v4()+'.'+file_type;
+        fs.renameSync(files.facility_images.path, path+filename);
+    })
+}
+
+// 執行設施新增
+exports.facility_add_save = function (req, res) {
+    // 寫入DB
+    var input = JSON.parse(JSON.stringify(req.body));
+    var name = input.facility_name;
+    var available_PER = input.available_PER;
+    var info = input.info;
+    req.getConnection(function (err, connection) {
+        // 撈出最後一筆編號
+        connection.query("SELECT No FROM `Facility` ORDER BY No DESC LIMIT 0 , 1", function (err, rows) {
+            if (err) {
+                errorPrint("Error Selecting（routes：/admin/facility_management/add_save）: %s ", err);
+            }else{
+                // 第一次新增會撈不到
+                if (String(rows[0])=="undefined"){
+                    no=1
+                }else{
+                    var no = Number(rows[0].No)+1;
+                }
+                var facility_data={
+                    Name: name,
+                    Info: info,
+                    Available_PER: available_PER,
+                    Images_Name: global.filename
+                };
+                var facility_check_data={
+                    No:no,
+                    Exist:1
+                }
+                connection.query("INSERT INTO Facility set ? ", facility_data, function (err, rows) {
+                    if (err) {
+                        errorPrint("Error inserting（routes：/admin/facility_management/add_save): %s ", err);
+                    }
+                });
+                connection.query("INSERT INTO Facility_Check set ? ", facility_check_data, function (err, rows) {
+                    if (err) {
+                        errorPrint("Error inserting（routes：/admin/facility_management/add_save): %s ", err);
+                    }
+                });
+                res.redirect('/admin/facility_management');
+            }
+        })
+    })
+}
+
+// 設施錯誤訊息
+exports.facility_errorMsg = function (req, res) {
+    var name = req.body.facility_name;
+    req.getConnection(function (err, connection) {
+        //依據Name判斷是否有重複新增設施
+        connection.query("SELECT * FROM Facility WHERE Name =?", [name], function (err, rows) {
+            if (err) {
+                errorPrint("Error Selecting（routes：admin/facility_management/error_msg）: %s ", err);
+            } 
+            if (rows[0] != undefined) {
+                res.send({ msg: "此設施已存在。" });
+            }
+        })
+    })
 }

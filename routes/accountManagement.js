@@ -108,42 +108,41 @@ exports.admin_save_reg = function (req, res) {
                 errorPrint("Error Selecting（routes：/reg/admin_save）: %s ", err);
             }else{
                 // 第一次新增會撈不到
-            if (String(rows[0])=="undefined"){
-                no=1
-            }else{
-                var no = Number(rows[0].No)+1;
-            }
-            
-            var admin_data = {
-                Email: email,
-                Password: password
-            };
-            var admin_name_data = {
-                Admin_No: no,
-                Name: name
-            };
-            var admin_member_data = {
-                Admin_No: no,
-                Birth: birth,
-                Phone: phone,
-                Sex: sex
-            };
-            connection.query("INSERT INTO Admin set ? ", admin_data, function (err, rows) {
-                if (err) {
-                    errorPrint("Error inserting（routes：/reg/admin): %s ", err);
+                if (String(rows[0])=="undefined"){
+                    no=1
+                }else{
+                    var no = Number(rows[0].No)+1;
                 }
-            });
-            connection.query("INSERT INTO Admin_Name set ? ", admin_name_data, function (err, rows) {
-                if (err) {
-                    errorPrint("Error inserting（routes：/reg/admin): %s ", err);
-                } 
-            });
-            connection.query("INSERT INTO Admin_Member set ? ", admin_member_data, function (err, rows) {
-                if (err) {
-                    errorPrint("Error inserting（routes：/reg/admin): %s ", err);
-                } 
-            });
-            res.redirect('/admin/login');
+                var admin_data = {
+                    Email: email,
+                    Password: password
+                };
+                var admin_name_data = {
+                    Admin_No: no,
+                    Name: name
+                };
+                var admin_member_data = {
+                    Admin_No: no,
+                    Birth: birth,
+                    Phone: phone,
+                    Sex: sex
+                };
+                connection.query("INSERT INTO Admin set ? ", admin_data, function (err, rows) {
+                    if (err) {
+                        errorPrint("Error inserting（routes：/reg/admin): %s ", err);
+                    }
+                });
+                connection.query("INSERT INTO Admin_Name set ? ", admin_name_data, function (err, rows) {
+                    if (err) {
+                        errorPrint("Error inserting（routes：/reg/admin): %s ", err);
+                    } 
+                });
+                connection.query("INSERT INTO Admin_Member set ? ", admin_member_data, function (err, rows) {
+                    if (err) {
+                        errorPrint("Error inserting（routes：/reg/admin): %s ", err);
+                    } 
+                });
+                res.redirect('/admin/login');
             }
         })
     })

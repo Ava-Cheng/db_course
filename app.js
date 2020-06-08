@@ -80,11 +80,23 @@ app.get('/admin/logout', admin.admin_logout);
 app.post('/admin/error_msg', admin.errorMsg);
 // 帳號管理
 app.get('/admin/account_view', admin.admin_account_view);
+// 執行修改帳號資訊
 app.post('/admin/account_view_save', admin.admin_account_view_save);
-// 會員門票檢視
+// 會員門票查看
 app.get('/admin/member_tickets', admin.member_tickets);
-// 會員資料檢視
+// 會員資料查看
 app.get('/admin/member_data', admin.member_data);
+// 設施管理
+// 設施查看
+app.get('/admin/facility_management', admin.facility_management);
+// 設施新增
+app.get('/admin/facility_management/add', admin.facility_add);
+// 上傳圖片
+app.post('/admin/facility_management/add/upload_images', admin.upload_images);
+// 執行設施新增
+app.post('/admin/facility_management/add_save', admin.facility_add_save);
+// 設施錯誤訊息
+app.post('/admin/facility_management/error_msg', admin.facility_errorMsg);
 
 // 失敗
 app.get('/failure', routes.failure)

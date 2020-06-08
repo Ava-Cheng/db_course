@@ -1,0 +1,39 @@
+<%- include layouts/header.ejs %>
+
+<div id="content">
+    <%- include layouts/side.ejs %>
+    <table id="facility_management_table">
+        <tr>
+            <th style="width: 8%">設施編號</th>
+            <th style="width: 20%">設施名稱</th>
+            <th style="width: 10%">人數</th>
+            <th style="width: 10%"><input type="button" value="✚ 新增" onclick="go_add_facility()"></th>
+        </tr>
+        <!-- 判斷是否有資料 -->
+        <% if(data[0]){ %>
+            <% for(var i= 0;i < data.length;i++) { %>
+                <tr class="facility_management_table_tr">
+                    <td class="td_center">
+                        <%= data[i].No%>
+                    </td>
+                    <td class="td_center">
+                        <%= data[i].Name%>
+                    </td>
+                    <td class="td_center">
+                        <%= data[i].Available_PER%>
+                    </td>
+                    <td class="td_center">
+                        <input type="button" value="✎ 修改">
+                        <input type="button" value="✘ 刪除">
+                    </td>
+                </tr>
+            <% } %>
+        <% }else{%>
+            <tr>
+                <td colspan="4" class="td_center"><span class="nullData">沒有資料</span></td>
+            </tr>
+        <% } %>
+    </table>
+</div>
+
+<%- include layouts/footer.ejs %>

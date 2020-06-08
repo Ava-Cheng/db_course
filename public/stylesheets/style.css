@@ -92,7 +92,7 @@ table{
     margin:30px auto 8px auto;
     display:block;
 }
-.paradise_information,.facilities_information,.traffic_information,.reg_btn,.loginBtn{
+.paradise_information,.facilities_information,.traffic_information,.reg_btn,.loginBtn,.facility_btn{
     -webkit-appearance:button;
     width:80px;
     height:40px;
@@ -166,6 +166,9 @@ table{
     color: darkred;
     text-align: center;
 }
+#birth{
+    width: 127px;
+}
 
 /*會員資料查看*/
 #member_table{
@@ -198,6 +201,61 @@ table{
     cursor: text; 
 }
 
+/*設施管理*/
+#facility_management_table{
+    margin-left:auto; 
+    margin-right:auto;
+    overflow:auto;
+}
+#facility_management_table th{
+    background: rgba(25, 122, 248, 0.829);
+    color: rgb(255, 255, 255);
+    height: 30px;
+    border-top: black solid 1px;
+    border-bottom: black solid 1px;
+}
+.facility_management_table_tr:nth-child(even) {
+    background: rgb(223, 222, 222);
+    height: 30px;
+}
+.facility_management_table_tr:nth-child(odd) {
+    background: rgb(255, 255, 255);
+    height: 30px;
+}
+#facility_table{
+    margin:0px auto 0px auto;
+}
+#available_PER,#facility_name{
+    width: 315px;
+}
+#facility_images,#preview_img,#facilityBtn{
+    display: none;
+}
+.frame {  
+    height: 160px; /*can be anything*/
+    width: 320px; /*can be anything*/
+    position: relative;
+    border: rgb(0, 0, 0) 1px solid;
+    background: rgb(255, 255, 255);
+}
+#preview_img{
+    max-height: 100%;  
+    max-width: 100%; 
+    width: auto;
+    height: auto;
+    position: absolute;  
+    top: 0;  
+    bottom: 0;  
+    left: 0;  
+    right: 0;  
+    margin: auto;
+    
+}  
+#facility_action{
+    position:relative;
+    top:300px;
+    left:400px;
+}
 /*按鈕*/
 .cancel{
     -webkit-appearance:button;

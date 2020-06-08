@@ -1,3 +1,5 @@
+var ckNumber = /\d{1,2}$/;// 設施人數格式檢查
+
 // 回上一頁
 function go_back(){
     history.go(-1);
@@ -39,7 +41,7 @@ window.onload = function initSet() {
                 if (!ckName.test(name)) {
                     $("#errorMsg").html("您所輸入的'姓名'格式錯誤，請再次檢查。");
                 } else if (name.length > 40) {
-                    $("#errorMsg").html("您所輸入的'姓名'最大長度為40字，請再次檢查。");
+                    $("#errorMsg").html("您所輸入的'姓名'長度過長，請再次檢查。");
                 } else{
                     $("#errorMsg").html("");
                 }
@@ -63,7 +65,7 @@ window.onload = function initSet() {
                 if (!ckPhone.test(phone)) {
                     $("#errorMsg").html("您所輸入的'行動電話'格式錯誤，請再次檢查。");
                 } else if (phone.length > 15) {
-                    $("#errorMsg").html("您所輸入的'行動電話'最大長度為15字，請再次檢查。");
+                    $("#errorMsg").html("您所輸入的'行動電話'長度過長，請再次檢查。");
                 } else{
                     $("#errorMsg").html("");
                 }
@@ -76,7 +78,7 @@ window.onload = function initSet() {
                 if (!ckEmail.test(email)) {
                     $("#errorMsg").html("您所輸入的'Email'格式錯誤，請再次檢查。");
                 } else if (email.length > 150) {
-                    $("#errorMsg").html("您所輸入的'Email'最大長度為150字，請再次檢查。");
+                    $("#errorMsg").html("您所輸入的'Email'長度過長，請再次檢查。");
                 } else{
                     $("#errorMsg").html("");
                 }
@@ -103,6 +105,44 @@ window.onload = function initSet() {
                 if (password_repeat != password) {
                     $("#errorMsg").html("兩次輸入密碼不相符，請再次檢查。");
                 }else{
+                    $("#errorMsg").html("");
+                }
+            })
+        }
+        
+        // 驗證設施名稱
+        if ($("#facility_name")) {
+            $("#facility_name").blur(function () {
+                var facility_name = $("#facility_name").val();
+                if (facility_name.length > 40) {
+                    $("#errorMsg").html("您所輸入的'設施名稱'長度過長，請再次檢查。");
+                } else{
+                    $("#errorMsg").html("");
+                }
+            })
+        }
+
+        // 驗證設施人數
+        if ($("#available_PER")) {
+            $("#available_PER").blur(function () {
+                var available_PER = $("#available_PER").val();
+                if(!ckNumber.test(available_PER)){
+                    $("#errorMsg").html("您所輸入的'設施人數'格式錯誤，請再次檢查。");
+                }else if (Number(available_PER) > 25) {
+                    $("#errorMsg").html("您所輸入的'設施人數'長度過長，請再次檢查。");
+                }else{
+                    $("#errorMsg").html("");
+                }
+            })
+        }
+
+        // 驗證設施名稱
+        if ($("#info")) {
+            $("#info").blur(function () {
+                var info = $("#info").val();
+                if (info.length > 1000) {
+                    $("#errorMsg").html("您所輸入的'設施介紹'長度過長，請再次檢查。");
+                } else{
                     $("#errorMsg").html("");
                 }
             })
