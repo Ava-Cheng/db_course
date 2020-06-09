@@ -7,7 +7,7 @@
             <th style="width: 8%">設施編號</th>
             <th style="width: 20%">設施名稱</th>
             <th style="width: 10%">人數</th>
-            <th style="width: 10%"><input type="button" value="✚ 新增" onclick="go_add_facility()"></th>
+            <th style="width: 10%"><input type="button" value="✚ 新增" class="add_btn" onclick="go_add_facility()"></th>
         </tr>
         <!-- 判斷是否有資料 -->
         <% if(data[0]){ %>
@@ -23,8 +23,8 @@
                         <%= data[i].Available_PER%>
                     </td>
                     <td class="td_center">
-                        <input type="button" value="✎ 修改">
-                        <input type="button" value="✘ 刪除">
+                        <input type="button" class="del_btn" value="✘ 刪除">
+                        <input type="button" class="edit_btn" value="✎ 修改">
                     </td>
                 </tr>
             <% } %>

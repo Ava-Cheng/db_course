@@ -92,13 +92,14 @@ table{
     margin:30px auto 8px auto;
     display:block;
 }
-.paradise_information,.facilities_information,.traffic_information,.reg_btn,.loginBtn,.facility_btn{
+.paradise_information,.facilities_information,.traffic_information{
     -webkit-appearance:button;
     width:80px;
     height:40px;
     border-radius:10px;
     color: rgb(255, 255, 255);
-    background: rgba(25, 122, 248, 0.904);
+    background: rgba(255, 255, 255, 0.904);
+    border: rgb(223, 222, 222) 1px solid;
 }
 #index_button{
     width:100%;
@@ -170,24 +171,25 @@ table{
     width: 127px;
 }
 
-/*會員資料查看*/
-#member_table{
+/*會員資料查看*//*設施管理*/
+#member_table,#facility_management_table{
     margin-left:auto; 
     margin-right:auto;
+    width: 730px;
     overflow:auto;
 }
-#member_table th{
+#member_table th,#facility_management_table th{
     background: rgba(25, 122, 248, 0.829);
     color: rgb(255, 255, 255);
     height: 30px;
     border-top: black solid 1px;
     border-bottom: black solid 1px;
 }
-.member_table_tr:nth-child(even) {
+.member_table_tr:nth-child(even),.facility_management_table_tr:nth-child(even)  {
     background: rgb(223, 222, 222);
     height: 30px;
 }
-.member_table_tr:nth-child(odd) {
+.member_table_tr:nth-child(odd),.facility_management_table_tr:nth-child(odd) {
     background: rgb(255, 255, 255);
     height: 30px;
 }
@@ -202,26 +204,6 @@ table{
 }
 
 /*設施管理*/
-#facility_management_table{
-    margin-left:auto; 
-    margin-right:auto;
-    overflow:auto;
-}
-#facility_management_table th{
-    background: rgba(25, 122, 248, 0.829);
-    color: rgb(255, 255, 255);
-    height: 30px;
-    border-top: black solid 1px;
-    border-bottom: black solid 1px;
-}
-.facility_management_table_tr:nth-child(even) {
-    background: rgb(223, 222, 222);
-    height: 30px;
-}
-.facility_management_table_tr:nth-child(odd) {
-    background: rgb(255, 255, 255);
-    height: 30px;
-}
 #facility_table{
     margin:0px auto 0px auto;
 }
@@ -257,12 +239,30 @@ table{
     left:400px;
 }
 /*按鈕*/
-.cancel{
+.add_btn{
     -webkit-appearance:button;
-    width:80px;
-    height:40px;
-    border-radius:10px;
+    width:65px;
+    height:25px;
+    border-radius:5px;
+    background: rgba(5, 179, 98, 0.904);
+    border: rgb(223, 222, 222) 1px solid;
+    color: rgb(255, 255, 255);
+}
+.edit_btn,.reg_btn,.loginBtn,.facility_btn{
+    -webkit-appearance:button;
+    width:65px;
+    height:25px;
+    border-radius:5px;
+    background: rgba(25, 122, 248, 0.904);
+    border: rgb(223, 222, 222) 1px solid;
+    color: rgb(255, 255, 255);
+}
+.del_btn,.cancel{
+    -webkit-appearance:button;
+    width:65px;
+    height:25px;
+    border-radius:5px;
     background: #b10101ce;
-    border: none;
+    border: rgb(223, 222, 222) 1px solid;
     color: rgb(255, 255, 255);
 }

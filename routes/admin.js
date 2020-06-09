@@ -228,8 +228,8 @@ exports.facility_management = function (req, res) {
     }else{
         req.getConnection(function (err, connection) {
             // 撈出設施相關資料
-            connection.query('SELECT * FROM Facility Inner join Facility_Check on Facility_Check.No ' +
-                'WHERE Facility_Check.Exist = ?', [0], function (err, rows) {
+            connection.query('SELECT * FROM Facility Facility INNER JOIN ( SELECT * FROM Facility_Check) Facility_Check ON Facility.No=Facility_Check.No ' +
+                'WHERE Facility_Check.Exist = ?', [1], function (err, rows) {
                     if (err) {
                         errorPrint("Error Selecting（routes：/admin/facility_management): %s ", err);
                     } else{
