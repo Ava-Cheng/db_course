@@ -146,3 +146,24 @@ function click_facilityBtn(){
 function go_edit_facility(no){
     window.location.href = '/admin/facility_management/edit/'+no;
 }
+
+// 設施刪除
+function go_del_facility(no){
+    var facility_form = document.getElementById("facility_form");
+    var isClick = true;
+    if (isClick) {
+        isClick = false;
+        //刪除確認
+        var result = confirm('您確定要刪除嗎？');
+        if (result == true) {
+            facility_form.action = '/admin/facility_management/del/'+no;
+            alert('已刪除');
+        } else {
+            return false;
+        }
+        setTimeout(function () {
+            isClick = true;
+        }, 1500); //不能重複點擊
+    }
+    facility_form.submit();
+}

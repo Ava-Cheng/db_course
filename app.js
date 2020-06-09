@@ -100,7 +100,7 @@ app.get('/admin/facility_management/edit/:no', admin.facility_management_edit);
 // 執行設施修改
 app.post('/admin/facility_management/edit_save', admin.facility_management_edit_save);
 // 執行設施刪除
-//app.post('/personnels/delete', personnels.delete);
+app.post('/admin/facility_management/del/:no', admin.facility_management_delete_save);
 // 設施錯誤訊息
 app.post('/admin/facility_management/error_msg', admin.facility_errorMsg);
 

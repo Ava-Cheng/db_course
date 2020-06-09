@@ -353,6 +353,8 @@ exports.facility_management_edit= function (req, res) {
         })
     }
 }
+
+// 執行設施修改
 exports.facility_management_edit_save= function (req, res) {
     var input = JSON.parse(JSON.stringify(req.body));
     var name = input.facility_name;
@@ -377,6 +379,23 @@ exports.facility_management_edit_save= function (req, res) {
         connection.query("UPDATE Facility SET ? WHERE No = ? ", [facility_data,no], function (err, row) {
             if (err) {
                 errorPrint("Error Updating（routes：/admin/facility_management/edit_save）: %s ", err);
+            }else{
+                res.redirect('/admin/facility_management');
+            }
+        });
+    })
+}
+
+// 執行設施刪除
+exports.facility_management_delete_save= function (req, res) {
+    var no=req.params.no;
+    var facility_check_data={
+        Exist: 0
+    };
+    req.getConnection(function (err, connection) {
+        connection.query("UPDATE Facility_Check SET ? WHERE No = ? ", [facility_check_data,no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/admin/facility_management/del/:no）: %s ", err);
             }else{
                 res.redirect('/admin/facility_management');
             }
