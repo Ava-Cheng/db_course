@@ -110,3 +110,80 @@ exports.order = function (req, res) {
         });
     }
 }
+
+// 會員帳號資料
+exports.user_account_view = function (req, res) {
+    //如果cookies不存在，直接輸入網址，則導回登入頁面
+    if (!req.cookies.information || req.cookies.information == undefined) {
+        res.redirect('/user/login');
+    }else{
+        req.getConnection(function (err, connection) {
+            // 依據No去找出相關管理員資料
+            no=req.cookies.information.no;
+            connection.query('SELECT * FROM User Inner join User_Member on User_Member.User_No ' +
+                'Inner join User_Name on User_Name.User_No ' +
+                'WHERE User.No = ? AND User_Member.User_No = ? AND User_Name.User_No = ?', [no,no,no], function (err, rows) {
+                    // 生日格式轉換為YYYY/MM/DD才可以帶入input date
+                    var rowsToJson = (JSON.parse((JSON.stringify(rows)).slice(1, -1)));
+                    var Birth = (rowsToJson.Birth).slice(0, -14);
+                    if (err) {
+                        errorPrint("Error Selecting (routes：/user/account_view）: %s ", err);
+                    } else {
+                        res.render('user_account_view', {
+                            page_title: "帳號管理",
+                            data: rows,
+                            birth: Birth,
+                            full_name:req.cookies.information.name,
+                            identity:req.cookies.information.identity
+                        });
+                    }
+                }
+            )
+        })
+    }
+};
+
+// 執行會員帳號資料編輯
+exports.user_account_view_save = function (req, res) {
+    var input = JSON.parse(JSON.stringify(req.body));
+    var no=req.cookies.information.no;
+    // 不一定會更改密碼
+    if(input.password==""){
+        var user_data = {
+            Email: input.email
+        };
+    }else{
+        var md5 = crypto.createHash('md5');
+        var password = input.password;
+        password = md5.update(password).digest('hex');
+        var user_data = {
+            Email: input.email,
+            Password: password
+        };
+    }
+    var user_name_data = {
+        Name: input.name
+    };
+    var user_member_data = {
+        Birth: input.birth,
+        Phone: input.phone
+    };
+    req.getConnection(function (err, connection) {
+        connection.query("UPDATE User set ? WHERE No = ? ", [user_data , no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/user/account_view_save）: %s ", err);
+            }
+        });
+        connection.query("UPDATE User_Member set ? WHERE User_No = ? ", [user_member_data , no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/user/account_view_save）: %s ", err);
+            }
+        });
+        connection.query("UPDATE User_Name set ? WHERE User_No = ? ", [user_name_data , no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/user/account_view_save）: %s ", err);
+            }
+        });
+        res.redirect('/user/order');
+    })
+}

@@ -22,7 +22,7 @@ function reg_error_msg(frm,data){
 }
 
 // 註冊Emial、密碼、姓名、電話格式及長度檢查
-function ckform_reg() {
+function ckform_reg(status) {
     var frm = document.getElementById("regForm");
     var email = frm.email.value;
     var password = frm.password.value;
@@ -30,9 +30,14 @@ function ckform_reg() {
     var name = frm.name.value;
     var phone = frm.phone.value;
     var birth = frm.birth.value;
-    if (((frm.index_account_view.value =="exist")||(frm.index_account_view.value !="exist" && password != "")) && ckName.test(name) && name.length <= 40 && birth!="" && ckPhone.test(phone) && phone.length <= 15 && ckEmail.test(email) && email.length <= 150  && password == password_repeat){
+    if(status=="edit"){
+        var no=frm.no.value;
+    }else{
+        var no=0;
+    }
+    if (((frm.exist.value =="exist")||(frm.exist.value !="exist" && password != "")) && ckName.test(name) && name.length <= 40 && birth!="" && ckPhone.test(phone) && phone.length <= 15 && ckEmail.test(email) && email.length <= 150  && password == password_repeat){
         // 錯誤訊息接收
-        data={"email":email,"password":password,"password_repeat":password_repeat,"name":name,"phone":phone,"birth":birth};
+        data={"no":no,"email":email,"password":password,"password_repeat":password_repeat,"name":name,"phone":phone,"birth":birth,"status":status};
         reg_error_msg(frm,data);
     }else if (!ckName.test(name)) {
         alert("您所輸入的'姓名'格式錯誤，請再次檢查。");
@@ -44,7 +49,7 @@ function ckform_reg() {
         alert("您所輸入的'行動電話'格式錯誤，請再次檢查。");
     } else if (!ckEmail.test(email) || email.length > 150) {
         alert("您所輸入的'Email'格式錯誤，請再次檢查。");
-    } else if (password == "" && frm.index_account_view.value!="exist") {
+    } else if (password == "" && frm.exist.value!="exist") {
         alert("請輸入有效密碼，請再次檢查。");
     } else if (password_repeat != password) {
         alert("兩次輸入密碼不相符，請再次檢查。");

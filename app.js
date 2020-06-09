@@ -116,6 +116,10 @@ app.post('/user/user_do_login', user.user_do_login);
 app.get('/user/logout', user.user_logout);
 // 登入錯誤訊息
 app.post('/user/error_msg', user.errorMsg);
+// 帳號管理
+app.get('/user/account_view', user.user_account_view);
+// 執行修改帳號資訊
+app.post('/user/account_view_save', user.user_account_view_save);
 // 目前訂單
 app.get('/user/order', user.order);
 

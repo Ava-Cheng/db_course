@@ -3,7 +3,7 @@
 <div id="content">
     <%- include layouts/side.ejs %>
     <div id="body">
-        <form method="post" id="regForm" name="regForm" action="/admin/account_view_save">
+        <form method="post" id="regForm" name="regForm" action="/user/account_view_save">
             <input type="hidden" id="exist" name="exist" value="exist"  readonly="readonly" required>
             <input type="hidden" id="no" name="no" value="<%=data[0].No%>"  readonly="readonly" required>
             <table id="reg_table" cellpadding='5'>

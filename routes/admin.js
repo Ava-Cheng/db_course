@@ -113,7 +113,6 @@ exports.admin_account_view = function (req, res) {
     }else{
         req.getConnection(function (err, connection) {
             // 依據No去找出相關管理員資料
-            // TODO:No要依據登入去做改變
             no=req.cookies.information.no;
             connection.query('SELECT * FROM Admin Inner join Admin_Member on Admin_Member.Admin_No ' +
                 'Inner join Admin_Name on Admin_Name.Admin_No ' +
@@ -141,7 +140,6 @@ exports.admin_account_view = function (req, res) {
 // 執行管理員帳號資料編輯
 exports.admin_account_view_save = function (req, res) {
     var input = JSON.parse(JSON.stringify(req.body));
-    // TODO:no之後要自動帶入
     var no=req.cookies.information.no;
     // 不一定會更改密碼
     if(input.password==""){

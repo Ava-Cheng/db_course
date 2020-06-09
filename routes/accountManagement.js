@@ -157,15 +157,30 @@ exports.admin_save_reg = function (req, res) {
 //註冊Email有無重複判斷，顯示錯誤訊息
 exports.errorMsg = function (req, res) {
     var email = req.body.email;
+    var no = req.body.no;
+    var status = req.body.status;
     req.getConnection(function (err, connection) {
-        //依據email撈出User用來檢查是否有重複註冊
-        connection.query("SELECT * FROM User WHERE email =?", [email], function (err, rows) {
-            if (err) {
-                errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err);
-            } 
-            if (rows[0] != undefined) {
-                res.send({ msg: "此帳號已存在，請直接登入。" });
-            }
-        })
+        if(status=="reg"){
+            //依據email撈出User用來檢查是否有重複註冊
+            connection.query("SELECT * FROM User WHERE email =?", [email], function (err, rows) {
+                if (err) {
+                    errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err);
+                } 
+                if (rows[0] != undefined) {
+                    res.send({ msg: "此帳號已存在，請直接登入。" });
+                }
+            })
+        }else{
+            //依據email撈出User用來檢查是否有重複註冊
+            connection.query("SELECT * FROM User WHERE email =? AND No!=?", [email,no], function (err, rows) {
+                if (err) {
+                    errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err);
+                } 
+                if (rows[0] != undefined) {
+                    res.send({ msg: "此帳號已存在，請直接登入。" });
+                }
+            })
+        }
+        
     })
 }
