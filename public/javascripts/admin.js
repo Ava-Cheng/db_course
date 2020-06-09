@@ -104,14 +104,19 @@ function upload(input) {
 }
   
 // 設施新增
-function ckform_facility(){
+function ckform_facility(status){
     var frm = document.getElementById("facility_add_form");
     var facility_name = frm.facility_name.value;
     var available_PER = frm.available_PER.value;
     var info = frm.info.value;
+    if(status=="add"){
+        var no="0";
+    }else{
+        var no=frm.no.value;
+    }
     if (facility_name.length <= 40 && facility_name!="" && ckNumber.test(available_PER) && Number(available_PER) <= 25 && available_PER!="" && info.length <= 1000 && info!=""){
         // 錯誤訊息接收
-        data={"facility_name":facility_name,"available_PER":available_PER,"info":info};
+        data={"facility_name":facility_name,"status":status,"no":no};
         facility_error_msg(frm,data);
     } else if (facility_name.length > 40) {
         alert("您所輸入的'設施名稱'長度過長，請再次檢查。");
@@ -135,4 +140,9 @@ function ckform_facility(){
 // 點擊facilityBtn
 function click_facilityBtn(){
     document.getElementById("facilityBtn").click();
+}
+
+// 設施編輯
+function go_edit_facility(no){
+    window.location.href = '/admin/facility_management/edit/'+no;
 }

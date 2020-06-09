@@ -250,6 +250,7 @@ exports.facility_add = function (req, res) {
     if (!req.cookies.admin || req.cookies.admin == undefined) {
         res.redirect('/admin/login');
     }else{
+        global.filename ="";
         res.render('facility_add', {
             page_title: "設施新增",
             admin_name:req.cookies.admin.name
@@ -285,7 +286,6 @@ exports.upload_images = function (req, res) {
 
 // 執行設施新增
 exports.facility_add_save = function (req, res) {
-    // 寫入DB
     var input = JSON.parse(JSON.stringify(req.body));
     var name = input.facility_name;
     var available_PER = input.available_PER;
@@ -328,18 +328,88 @@ exports.facility_add_save = function (req, res) {
     })
 }
 
+// 設施修改
+exports.facility_management_edit= function (req, res) {
+    var no=req.params.no;
+    //如果cookies不存在，直接輸入網址，則導回登入頁面
+    if (!req.cookies.admin || req.cookies.admin == undefined) {
+        res.redirect('/admin/login');
+    }else{
+        global.filename ="";
+        req.getConnection(function (err, connection) {
+            // 撈出設施相關資料
+            connection.query('SELECT * FROM Facility INNER JOIN Facility_Check ON Facility.No=Facility_Check.No ' +
+                'WHERE Facility.No = ?', [no], function (err, rows) {
+                    if (err) {
+                        errorPrint("Error Selecting（routes：/admin/facility_management): %s ", err);
+                    } else{
+                        res.render('facility_edit', {
+                            page_title: "設施編輯",
+                            admin_name:req.cookies.admin.name,
+                            data: rows
+                        })
+                    }
+            });
+        })
+    }
+}
+exports.facility_management_edit_save= function (req, res) {
+    var input = JSON.parse(JSON.stringify(req.body));
+    var name = input.facility_name;
+    var available_PER = input.available_PER;
+    var info = input.info;
+    var no = input.no;
+    if(global.filename==''){
+        var facility_data={
+            Name: name,
+            Info: info,
+            Available_PER: available_PER
+        };
+    }else{
+        var facility_data={
+            Name: name,
+            Info: info,
+            Available_PER: available_PER,
+            Images_Name: global.filename
+        };
+    }
+    req.getConnection(function (err, connection) {
+        connection.query("UPDATE Facility SET ? WHERE No = ? ", [facility_data,no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/admin/facility_management/edit_save）: %s ", err);
+            }else{
+                res.redirect('/admin/facility_management');
+            }
+        });
+    })
+}
+
 // 設施錯誤訊息
 exports.facility_errorMsg = function (req, res) {
     var name = req.body.facility_name;
+    var status = req.body.status;
+    var no = req.body.no;
     req.getConnection(function (err, connection) {
-        //依據Name判斷是否有重複新增設施
-        connection.query("SELECT * FROM Facility WHERE Name =?", [name], function (err, rows) {
-            if (err) {
-                errorPrint("Error Selecting（routes：admin/facility_management/error_msg）: %s ", err);
-            } 
-            if (rows[0] != undefined) {
-                res.send({ msg: "此設施已存在。" });
-            }
-        })
+        if(status=="add"){
+            //依據Name判斷是否有重複新增設施
+            connection.query("SELECT * FROM Facility WHERE Name =?", [name], function (err, rows) {
+                if (err) {
+                    errorPrint("Error Selecting（routes：admin/facility_management/error_msg）: %s ", err);
+                } 
+                if (rows[0] != undefined) {
+                    res.send({ msg: "此設施已存在。" });
+                }
+            })
+        }else{
+            //依據Name判斷是否有重複新增設施，排除自己
+            connection.query("SELECT * FROM Facility WHERE Name =? AND No!=?", [name,no], function (err, rows) {
+                if (err) {
+                    errorPrint("Error Selecting（routes：admin/facility_management/error_msg）: %s ", err);
+                } 
+                if (rows[0] != undefined) {
+                    res.send({ msg: "此設施已存在。" });
+                }
+            })
+        }
     })
 }

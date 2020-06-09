@@ -3,26 +3,27 @@
 <div id="content">
     <%- include layouts/side.ejs %>
     <table id="facility_table" cellpadding='4'>
-        <form method="post" id="facility_add_form" name="facility_add_form" action="/admin/facility_management/add_save">
+        <form method="post" id="facility_add_form" name="facility_add_form" action="/admin/facility_management/edit_save">
+            <input type="hidden" name="no" id="no" value="<%= data[0].No%>"/>
             <tr>
                 <td style="width:60px">設施名稱</td>
                 <td>
-                    <input type="text" name="facility_name" id="facility_name" maxlength="40"/>&nbsp;ex.碰碰車
+                    <input type="text" name="facility_name" id="facility_name" value="<%= data[0].Name%>" maxlength="40"/>&nbsp;ex.碰碰車
                 </td>
             </tr>
             <tr>
                 <td>設施人數</td>
                 <td>
-                    <input type="text" name="available_PER" id="available_PER" maxlength="2"/>&nbsp;ex.10。最低：1，最高：25
+                    <input type="text" name="available_PER" id="available_PER" value="<%= data[0].Available_PER%>" maxlength="2"/>&nbsp;ex.10。最低：1，最高：25
                 </td>
             </tr>
             <tr>
                 <td>設施介紹</td>
                 <td>
-                    <textarea cols="50" rows="10" name="info" id="info" maxlength="1000"></textarea>
+                    <textarea cols="50" rows="10" name="info" id="info" maxlength="1000"><%= data[0].Info%></textarea>
                 </td>
             </tr>
-            <input type="button" name="facilityBtn" id="facilityBtn" class="facility_btn" value="✚ 新增" onclick="ckform_facility('add')">
+            <input type="button" name="facilityBtn" id="facilityBtn" class="facility_btn" value="✎ 修改" onclick="ckform_facility('edit')">
         </form>
         <form method="post" id="facility_add_upload_images" name="facility_add_upload_images" action="/admin/facility_management/add/upload_images" enctype="multipart/form-data">
             <tr>
@@ -32,14 +33,14 @@
                         <img id="preview_img" src="#" />
                     </div>
                     <input type="file" name="facility_images" id="facility_images" onchange="upload(this)" accept="image/*" targetID="preview_img"/>
-                    <input type="button" name="upload_images" id="upload_images" value="上傳圖片"  onclick="click_upload()">
+                    <input type="button" name="upload_images" id="upload_images" value="上傳圖片"  onclick="click_upload()">如果沒有要更改圖片，可為空。
                 </td>
             </tr>
         </form>
         <tr>
             <td colspan="2" class="td_center">
                 <input type="button" name="cancel" value="✘ 取消" class="cancel" onClick="go_back();">
-                &nbsp; <input type="button" name="click_facilityBtn" id="click_facilityBtn" class="facility_btn" value="✚ 新增" onclick="click_facilityBtn()">
+                &nbsp; <input type="button" name="click_facilityBtn" id="click_facilityBtn" class="facility_btn" value="✎ 修改" onclick="click_facilityBtn()">
             </td>
         </tr>
     </table>
