@@ -1,0 +1,36 @@
+<%- include layouts/header.ejs %>
+
+<div id="content">
+    <%- include layouts/side.ejs %>
+    <div id="body">
+        <form method="post" id="ticketForm" name="ticketForm" action="/user/ticket_save">
+            <table id="ticketBtn_table" cellpadding='5'>
+                <tr>
+                    <td>Email</td>
+                    <td><input type="text" name="email" id="email" value="<%=data[0].Email%>" disabled readonly/></td>
+                </tr>
+                <tr>
+                    <td>姓名</td>
+                    <td><input type="text" name="name" id="name" value="<%=data[0].Name%>" disabled readonly/></td>
+                </tr>
+                <tr>
+                    <td>行動電話</td>
+                    <td><input type="text" name="phone" id="phone" value="<%=data[0].Phone%>" disabled readonly/></td>
+                </tr>
+                <tr>
+                    <td>預定日期</td>
+                    <td><input type="date" name="book_date" id="book_date"/>&nbsp;ex.1989/02/02</td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="td_center">
+                        &nbsp; <input type="button" name="cancel" value="✘ 取消" class="cancel" onClick="go_back();">
+                        <input type="button" name="ticketBtn" id="ticketBtn" class="ticket_btn" value="✚ 預定" onclick="check_ticket_num('<%=data[0].User_No%>')">
+                    </td>
+                </tr>
+            </table>
+            <p id="errorMsg" class="errorMsg"></p>
+        </form>
+    </div>
+</div>
+
+<%- include layouts/footer.ejs %>

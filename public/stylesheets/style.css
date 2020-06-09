@@ -193,7 +193,7 @@ table{
 }
 
 /*註冊*/
-#reg_table,#login_table{
+#reg_table,#login_table,#ticketBtn_table{
     margin:0px auto 0px auto;
 }
 .td_center{
@@ -285,7 +285,7 @@ table{
     border: rgb(223, 222, 222) 1px solid;
     color: rgb(255, 255, 255);
 }
-.edit_btn,.reg_btn,.loginBtn,.facility_btn{
+.edit_btn,.reg_btn,.loginBtn,.facility_btn,.ticket_btn{
     -webkit-appearance:button;
     width:65px;
     height:25px;

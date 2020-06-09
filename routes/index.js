@@ -1,3 +1,9 @@
+// ERROR顯示以及跳轉
+function errorPrint(text, error) {
+    console.log(text, error);
+    res.redirect('/');
+}
+
 // 首頁
 exports.index = function(req, res) {
     if (!req.cookies.information || req.cookies.information == undefined) {

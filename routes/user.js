@@ -6,6 +6,12 @@ function setCookie_user(res,name,user_no) {
     return res.cookie("information", {"name":name,"no":user_no,"identity":"user"},  {maxAge: 1000*60*60*60 , httpOnly: true});//登陸成功後將使用者和密碼寫入Cookie，maxAge為cookie過期時間;
 }
 
+// ERROR顯示以及跳轉
+function errorPrint(text, error) {
+    console.log(text, error);
+    res.redirect('/');
+}
+
 // 會員登入
 exports.user_login = function (req, res) {
     // 如果已經登入則直接跳轉
@@ -97,20 +103,6 @@ exports.user_logout = function (req, res) {
     res.redirect('/user/login');
 };
 
-// 會員目前訂單
-exports.order = function (req, res) {
-    // 如果已經登入則直接跳轉
-    if (!req.cookies.information || req.cookies.information == undefined) {
-        res.redirect('/user/login');
-    }else{
-        res.render('user_order', {
-            page_title: "目前訂單",
-            full_name:req.cookies.information.name,
-            identity:req.cookies.information.identity
-        });
-    }
-}
-
 // 會員帳號資料
 exports.user_account_view = function (req, res) {
     //如果cookies不存在，直接輸入網址，則導回登入頁面
@@ -124,8 +116,7 @@ exports.user_account_view = function (req, res) {
                 'Inner join User_Name on User_Name.User_No ' +
                 'WHERE User.No = ? AND User_Member.User_No = ? AND User_Name.User_No = ?', [no,no,no], function (err, rows) {
                     // 生日格式轉換為YYYY/MM/DD才可以帶入input date
-                    var rowsToJson = (JSON.parse((JSON.stringify(rows)).slice(1, -1)));
-                    var Birth = (rowsToJson.Birth).slice(0, -14);
+                    var Birth = (JSON.parse(JSON.stringify(rows))[0].Birth).slice(0, -14);
                     if (err) {
                         errorPrint("Error Selecting (routes：/user/account_view）: %s ", err);
                     } else {
@@ -187,3 +178,117 @@ exports.user_account_view_save = function (req, res) {
         res.redirect('/user/order');
     })
 }
+
+// 預定門票
+exports.ticket = function (req, res) {
+    // 如果已經登入則直接跳轉
+    if (!req.cookies.information || req.cookies.information == undefined) {
+        res.redirect('/user/login');
+    }else{
+        req.getConnection(function (err, connection) {
+            // 依據No去找出相關管理員資料
+            var no=req.cookies.information.no;
+            connection.query('SELECT * FROM User Inner join User_Member on User_Member.User_No ' +
+                'Inner join User_Name on User_Name.User_No ' +
+                'WHERE User.No = ? AND User_Member.User_No = ? AND User_Name.User_No = ?', [no,no,no], function (err, rows) {
+                res.render('ticket', {
+                    page_title: "預定門票",
+                    full_name:req.cookies.information.name,
+                    identity:req.cookies.information.identity,
+                    data:rows,
+                    User_No:no
+                });
+            });
+        });
+    }
+}
+
+// 執行預定門票
+exports.ticket_save = function (req, res) {
+    var input = JSON.parse(JSON.stringify(req.body));
+    var user_no=req.cookies.information.no;
+    req.getConnection(function (err, connection) {
+        // 撈出最後一筆編號
+        connection.query("SELECT No FROM `Ticket` ORDER BY No DESC LIMIT 0 , 1", function (err, rows) {
+            if (err) {
+                errorPrint("Error Selecting（routes：/user/ticket_save）: %s ", err);
+            }else{
+                // 第一次新增會撈不到
+                if (String(rows[0])=="undefined"){
+                    no=1
+                }else{
+                    var no = Number(rows[0].No)+1;
+                }
+                var ticket_data = {
+                    User_No: user_no,
+                    Date:input.book_date
+                }
+                var ticket_check_data = {
+                    No:no,
+                    Exist: 1
+                }
+            
+                // TODO:依照入園人數去限制新增
+                connection.query("INSERT INTO Ticket set ?", [ticket_data], function (err, row) {
+                    if (err) {
+                        errorPrint("Error Updating（routes：/user/ticket_save）: %s ", err);
+                    }
+                });
+                connection.query("INSERT INTO Ticket_Check set ?  ", [ticket_check_data], function (err, row) {
+                    if (err) {
+                        errorPrint("Error Updating（routes：/user/ticket_save）: %s ", err);
+                    }
+                });
+                // TODO:跳到設施預約頁面
+                res.redirect('/user/order');
+            }
+        })
+    })
+}
+
+// 門票人數確認
+exports.ticket_num_check = function (req, res) {
+    var book_date = req.body.book_date;
+    var user_no = req.body.user_no;
+    req.getConnection(function (err, connection) {
+        // 計算每個日期加總
+        connection.query("SELECT Date,count(Date) as Count FROM Ticket GROUP BY Date", function (err, rows) {
+            if (err) {
+                errorPrint("Error Selecting（routes：/user/ticket_save）: %s ", err);
+            }else{
+                var arrary_date=[];
+                var arrary_count=[];
+                var arrar_num=JSON.parse(JSON.stringify(rows)).length;
+                for(var i=0;i<arrar_num;i++){
+                    arrary_date.push((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14));
+                    arrary_count.push(JSON.parse(JSON.stringify(rows))[i].Count);
+                }
+                for(var i=0;i<arrar_num;i++){
+                    connection.query('SELECT Date FROM Ticket WHERE No = ? AND  Date = ?', [user_no,book_date], function (err, rows) {
+                        if(rows!=''){
+                            res.send({ msg: "您已經預訂過囉。"});
+                        }else if(book_date==arrary_date[5] &&  arrary_count[5]==500){// 500為自訂的入園人數
+                            res.send({ msg: "當天預定人數已經額滿，請擇日選擇。"});
+                        }
+                    })
+                    
+                }
+            }
+        })
+    })
+}
+
+// 會員目前訂單
+exports.order = function (req, res) {
+    // 如果已經登入則直接跳轉
+    if (!req.cookies.information || req.cookies.information == undefined) {
+        res.redirect('/user/login');
+    }else{
+        res.render('user_order', {
+            page_title: "目前訂單",
+            full_name:req.cookies.information.name,
+            identity:req.cookies.information.identity
+        });
+    }
+}
+

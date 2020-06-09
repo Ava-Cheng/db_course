@@ -23,7 +23,7 @@ exports.user_reg = function (req, res) {
 };
 
 // 執行會員註冊
-exports.user_save_reg = function (req, res) {
+exports.ser_reg_save = function (req, res) {
     var input = JSON.parse(JSON.stringify(req.body));
     var md5 = crypto.createHash('md5');
     var name = input.name;
@@ -73,8 +73,7 @@ exports.user_save_reg = function (req, res) {
                         errorPrint("Error inserting（routes：/user_reg): %s ", err);
                     } 
                 });
-                // TODO:改為登陸
-                res.redirect('/');
+                res.redirect('/user/login');
             }
         })
     })

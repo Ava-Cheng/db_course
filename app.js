@@ -64,10 +64,9 @@ app.get('/facility_information', routes.facility_information);
 
 
 // 帳號管理
-// TODO:user_save_reg 要改為 user_reg_save
 // 會員註冊
 app.get('/reg/user', accountManagement.user_reg);
-app.post('/reg/user_save', accountManagement.user_save_reg);
+app.post('/reg/user_save', accountManagement.ser_reg_save);
 // 管理員註冊
 app.get('/reg/admin', accountManagement.admin_reg);
 app.post('/reg/admin_save', accountManagement.admin_save_reg);
@@ -109,7 +108,7 @@ app.post('/admin/facility_management/del/:no', admin.facility_management_delete_
 app.post('/admin/facility_management/error_msg', admin.facility_errorMsg);
 
 // 會員
-// 管理員登入
+// 會員登入
 app.get('/user/login', user.user_login);
 app.post('/user/user_do_login', user.user_do_login);
 // 會員登出
@@ -120,6 +119,12 @@ app.post('/user/error_msg', user.errorMsg);
 app.get('/user/account_view', user.user_account_view);
 // 執行修改帳號資訊
 app.post('/user/account_view_save', user.user_account_view_save);
+// 預定門票
+app.get('/user/ticket', user.ticket);
+// 門票人數確認
+app.post('/user/ticket/num_check', user.ticket_num_check);
+// 執行預定門票
+app.post('/user/ticket_save', user.ticket_save);
 // 目前訂單
 app.get('/user/order', user.order);
 

@@ -118,8 +118,7 @@ exports.admin_account_view = function (req, res) {
                 'Inner join Admin_Name on Admin_Name.Admin_No ' +
                 'WHERE Admin.No = ? AND Admin_Member.Admin_No = ? AND Admin_Name.Admin_No = ?', [no,no,no], function (err, rows) {
                     // 生日格式轉換為YYYY/MM/DD才可以帶入input date
-                    var rowsToJson = (JSON.parse((JSON.stringify(rows)).slice(1, -1)));
-                    var Birth = (rowsToJson.Birth).slice(0, -14);
+                    var Birth = (JSON.parse(JSON.stringify(rows))[0].Birth).slice(0, -14);
                     if (err) {
                         errorPrint("Error Selecting (routes：/admin/account_view）: %s ", err);
                     } else {

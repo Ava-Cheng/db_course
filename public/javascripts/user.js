@@ -36,3 +36,29 @@ function user_error_msg(frm,data){
         }
     })
 }
+
+// 確認預定門票是否有超過限制
+function check_ticket_num(user_no){
+    var frm = document.getElementById("ticketForm");
+    var book_date = frm.book_date.value;
+    data={"user_no":user_no,"book_date":book_date};
+    $.ajax({
+        data: data,
+        url: '/user/ticket/num_check',
+        dataType: 'json',
+        type: 'POST',
+        cache: false,
+        timeout: 60,
+        success: function (msg) {
+            if(msg.msg=="當天預定人數已經額滿，請擇日選擇。" || msg.msg=="您已經預訂過囉。"){
+                alert(msg.msg);
+            }else{
+                $("#errorMsg").html(msg.msg);
+            } 
+        },
+        error: function (error) {
+            $("#errorMsg").html("");
+            frm.submit();
+        }
+    })
+}

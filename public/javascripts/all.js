@@ -24,6 +24,44 @@ function dateChange(birth) {
     return birth
 }
 
+// 選擇最小日期
+function min_data(){
+    var date = new Date();
+    var now=new Date(date.getTime());
+    var todayYear = now.getFullYear();
+    var todayMonth = now.getMonth() + 1;
+    var todayDate = now.getDate()+ 1;
+    var todayArray = [todayYear, todayMonth, todayDate];
+    //月、日、分、秒不足兩位數補0
+    for (var i = 1; i < todayArray.length; i++) {
+        if (todayArray[i].toString().length == 1) {
+            todayArray[i] = "0" + todayArray[i];
+        }
+    }
+    //要塞入datetime-local規定格式YYYY-MM-DDTHH:mm
+    var formatDate = todayArray[0] + '-' + todayArray[1] + '-' + todayArray[2] ;
+    return formatDate;
+}
+
+// 選擇最大日期
+function max_data(){
+    var date = new Date();
+    var now=new Date(date.getTime());
+    var todayYear = now.getFullYear()-6;
+    var todayMonth = now.getMonth() + 1;
+    var todayDate = now.getDate();
+    var todayArray = [todayYear, todayMonth, todayDate];
+    //月、日、分、秒不足兩位數補0
+    for (var i = 1; i < todayArray.length; i++) {
+        if (todayArray[i].toString().length == 1) {
+            todayArray[i] = "0" + todayArray[i];
+        }
+    }
+    //要塞入datetime-local規定格式YYYY-MM-DDTHH:mm
+    var formatDate = todayArray[0] + '-' + todayArray[1] + '-' + todayArray[2] ;
+    return formatDate;
+}
+
 window.onload = function initSet() {
     // 查看會員資料 生日格式轉換
     $(["input[id=birth_cheng]"][0]).each(function () {
@@ -146,6 +184,18 @@ window.onload = function initSet() {
                     $("#errorMsg").html("");
                 }
             })
+        }
+        
+        // 預定日期 從明天起
+        if (document.getElementById("book_date")) {
+            var book_date = document.getElementById("book_date");
+            book_date.min = min_data();
+        }
+
+        // 今天六年以前
+        if (document.getElementById("birth")) {
+            var birth = document.getElementById("birth");
+            birth.max = max_data();
         }
     })
 }
