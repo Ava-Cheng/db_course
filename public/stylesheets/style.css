@@ -155,6 +155,43 @@ table{
     display:block;
 }
 
+/*設施資訊*/
+.frame_view {
+    height: 360px;
+    width: 670px;
+    position: relative;
+}
+#facility_view{
+    max-height: 100%;  
+    max-width: 100%; 
+    width: auto;
+    height: auto;
+    position: absolute;  
+    top: 0;  
+    bottom: 0;  
+    left: 0;  
+    right: 0;  
+    margin: auto;
+} 
+#left{
+    width: 150px;
+    float: left;
+    vertical-align: center;
+}
+#right{
+    width: 570px;
+    float: left;
+    display: none;
+}
+#facility_info_table{
+    margin: 0px auto 0px auto;
+}
+#info_view,#facility_name{
+    border: none;
+    background: none;
+    pointer-events: none;
+}
+
 /*註冊*/
 #reg_table,#login_table{
     margin:0px auto 0px auto;

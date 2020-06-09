@@ -1,0 +1,44 @@
+<%- include layouts/header.ejs %>
+
+<div id="content">
+    <%- include layouts/side.ejs%>
+    <div id="body">
+        <div id="left">
+            <!-- 判斷是否有資料 -->
+            <% if(data[0]){ %>
+                <table id="facility_info_table">
+                    <% for(var i= 0;i < data.length;i++) { %>
+                        <input type="hidden" id="name" name="name" value="<%=data[i].Name%>">
+                        <input type="hidden" id="info" name="info" value="<%=data[i].Info%>">
+                        <input type="hidden" id="images_name" name="images_name" value="<%=data[i].Images_Name%>">
+                        <tr>
+                            <td width="330px" onclick="data_list('<%=data[i].Name%>','<%=data[i].Info%>','<%=data[i].Images_Name%>')">
+                                🚀<%=data[i].Name%>
+                            </td>
+                        </tr>
+                    <% } %>
+                </table>
+            <% }else{%>
+                <span class="nullData">沒有資料</span>
+            <% } %>
+        </div>
+        <div id="right">
+            <table id="facility_info_table">
+                <tr class="td_center">
+                    <td>
+                        <div class="frame_view">
+                            <img id="facility_view" src="" alt="設施圖片">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        🚀<input type="text" id="facility_name" name="facility_name" value="none" readonly="readonly">
+                        <textarea cols="90" rows="10" name="info_view" id="info_view" maxlength="1000" readonly="readonly"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<%- include layouts/footer.ejs %>

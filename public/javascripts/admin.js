@@ -48,7 +48,7 @@ function facility_error_msg(frm,data){
 }
 
 // 登入Email格式檢查
-function ckform_login(){
+function ckform_admin_login(){
     var frm = document.getElementById("loginForm");
     var email = frm.email.value;
     var password = frm.password.value;
@@ -114,11 +114,11 @@ function ckform_facility(status){
     }else{
         var no=frm.no.value;
     }
-    if (facility_name.length <= 40 && facility_name!="" && ckNumber.test(available_PER) && Number(available_PER) <= 25 && available_PER!="" && info.length <= 1000 && info!=""){
+    if (facility_name.length <= 10 && facility_name!="" && ckNumber.test(available_PER) && Number(available_PER) <= 25 && available_PER!="" && info.length <= 1000 && info!=""){
         // 錯誤訊息接收
         data={"facility_name":facility_name,"status":status,"no":no};
         facility_error_msg(frm,data);
-    } else if (facility_name.length > 40) {
+    } else if (facility_name.length > 10) {
         alert("您所輸入的'設施名稱'長度過長，請再次檢查。");
     } else if (facility_name=="") {
         alert("請輸入有效'設施名稱'，請再次檢查。");
@@ -132,7 +132,7 @@ function ckform_facility(status){
         alert("您所輸入的'設施介紹'長度過長，請再次檢查。");
     } else if (info=="") {
         alert("請輸入有效'設施介紹'，請再次檢查。");
-    } else if (facility_name.length > 40 && facility_name=="" && !ckNumber.test(available_PER) && Number(available_PER) > 25 && available_PER=="" && info.length > 1000 && info=="") {
+    } else if (facility_name.length > 10 && facility_name=="" && !ckNumber.test(available_PER) && Number(available_PER) > 25 && available_PER=="" && info.length > 1000 && info=="") {
         alert("失敗！請檢查您的'設施名稱'、'設施人數'、'設施介紹'格式，稍後再試。");
     }
 }

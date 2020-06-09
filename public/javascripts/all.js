@@ -114,7 +114,7 @@ window.onload = function initSet() {
         if ($("#facility_name")) {
             $("#facility_name").blur(function () {
                 var facility_name = $("#facility_name").val();
-                if (facility_name.length > 40) {
+                if (facility_name.length > 10) {
                     $("#errorMsg").html("您所輸入的'設施名稱'長度過長，請再次檢查。");
                 } else{
                     $("#errorMsg").html("");

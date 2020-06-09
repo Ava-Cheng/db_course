@@ -8,14 +8,17 @@ function errorPrint(text, error) {
 
 // 會員註冊
 exports.user_reg = function (req, res) {
-    if (!req.cookies.admin || req.cookies.admin == undefined) {
-        admin_name="";
+    if (!req.cookies.information || req.cookies.information == undefined) {
+        full_name="";
+        identity="";
     }else{
-        admin_name=req.cookies.admin.name;
+        full_name=req.cookies.information.name;
+        identity=req.cookies.information.identity;
     }
     res.render('user_reg', {
         page_title: "會員註冊",
-        admin_name:admin_name
+        full_name:full_name,
+        identity:identity
     });
 };
 
@@ -79,14 +82,17 @@ exports.user_save_reg = function (req, res) {
 
 // 管理員註冊
 exports.admin_reg = function (req, res) {
-    if (!req.cookies.admin || req.cookies.admin == undefined) {
-        admin_name="";
+    if (!req.cookies.information || req.cookies.information == undefined) {
+        full_name="";
+        identity="";
     }else{
-        admin_name=req.cookies.admin.name;
+        full_name=req.cookies.information.name;
+        identity=req.cookies.information.identity;
     }
     res.render('admin_reg', {
         page_title: "管理員註冊",
-        admin_name:admin_name
+        full_name:full_name,
+        identity:identity
     });
 };
 

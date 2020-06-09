@@ -11,6 +11,7 @@ var app = express();
 var routes = require('./routes/index');
 var accountManagement = require('./routes/accountManagement');
 var admin = require('./routes/admin');
+var user = require('./routes/user');
 //DB使用
 var fs = require('fs');
 var ini = require('ini');
@@ -58,6 +59,9 @@ app.get('/', routes.index);
 app.get('/paradise_information', routes.paradise_information);
 // 交通資訊
 app.get('/facilities_information', routes.facilities_information);
+// 設施資訊
+app.get('/facility_information', routes.facility_information);
+
 
 // 帳號管理
 // TODO:user_save_reg 要改為 user_reg_save
@@ -103,6 +107,17 @@ app.post('/admin/facility_management/edit_save', admin.facility_management_edit_
 app.post('/admin/facility_management/del/:no', admin.facility_management_delete_save);
 // 設施錯誤訊息
 app.post('/admin/facility_management/error_msg', admin.facility_errorMsg);
+
+// 會員
+// 管理員登入
+app.get('/user/login', user.user_login);
+app.post('/user/user_do_login', user.user_do_login);
+// 會員登出
+app.get('/user/logout', user.user_logout);
+// 登入錯誤訊息
+app.post('/user/error_msg', user.errorMsg);
+// 目前訂單
+app.get('/user/order', user.order);
 
 // 失敗
 app.get('/failure', routes.failure)

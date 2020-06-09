@@ -12,6 +12,7 @@
     <script type="text/javascript" src="/../javascripts/index.js"></script>
     <script type="text/javascript" src="/../javascripts/accountManagement.js"></script>
     <script type="text/javascript" src="/../javascripts/admin.js"></script>
+    <script type="text/javascript" src="/../javascripts/user.js"></script>
 </head>
 
 <body>
@@ -23,10 +24,14 @@
                 </a>
             </div>
             <div id="action">
-                <%if(admin_name !== '' && typeof(admin_name) !== 'undefined'){%>
-                    管理員：<%=admin_name%> 您好 | <a href="/admin/logout" rel="nofollow">🔓登出</a>
+                <%if(full_name !== '' && typeof(full_name) !== 'undefined' && identity === 'admin'){%>
+                    管理員：<%=full_name%> 您好 | <a href="/admin/logout" rel="nofollow">🔓登出</a>
                 <%}else{%>
-                    <a href="/admin/login" rel="nofollow">👤管理員登入</a>  |  <a href="/user/login" rel="nofollow">👥會員登入</a>  |  <a href="/reg/user" rel="nofollow">✍會員註冊</a>
+                    <%if(full_name !== '' && typeof(full_name) !== 'undefined' && identity === 'user'){%>
+                        會員：<%=full_name%> 您好 | <a href="/user/logout" rel="nofollow">🔓登出</a>
+                    <%}else{%>
+                        <a href="/admin/login" rel="nofollow">👤管理員登入</a>  |  <a href="/user/login" rel="nofollow">👥會員登入</a>  |  <a href="/reg/user" rel="nofollow">✍會員註冊</a>
+                    <%}%>
                 <%}%>
                 |  <a href="/" rel="nofollow">🏠️回首頁</a>
             </div>

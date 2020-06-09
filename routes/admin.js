@@ -2,9 +2,9 @@ var crypto = require('crypto');
 var uuid = require('uuid');
 
 // 設置cookie
-function setCookie(res,name,admin_no) {
+function setCookie_admin(res,name,admin_no) {
     // httpOnly 確保只透過HTTP(S) 傳送Cookie，而不透過用戶端JavaScript 傳送
-    return res.cookie("admin", {"name":name,"no":admin_no},  {maxAge: 1000*60*60*60 , httpOnly: true});//登陸成功後將使用者和密碼寫入Cookie，maxAge為cookie過期時間;
+    return res.cookie("information", {"name":name,"no":admin_no,"identity":"admin"},  {maxAge: 1000*60*60*60 , httpOnly: true});//登陸成功後將使用者和密碼寫入Cookie，maxAge為cookie過期時間;
 }
 
 // ERROR顯示以及跳轉
@@ -16,10 +16,11 @@ function errorPrint(text, error) {
 // 管理員登入
 exports.admin_login = function (req, res) {
     // 如果已經登入則直接跳轉
-    if (!req.cookies.admin || req.cookies.admin == undefined) {
+    if (!req.cookies.information || req.cookies.information == undefined) {
         res.render('admin_login', {
             page_title: "管理員登入",
-            admin_name:""
+            full_name:"",
+            identity:""
         });
     }else{
         res.redirect('/admin/member_tickets');
@@ -55,20 +56,19 @@ exports.admin_do_login = function (req, res) {
                             errorPrint("Error Selecting（routes：/admin/admin_do_login): %s ", err);
                         } 
                         var name=rows[0].Name;
-                        setCookie(res,name,admin_no);
+                        setCookie_admin(res,name,admin_no);
                         res.redirect('/admin/member_tickets');
                     })
                 }
             }
         })
     })
-    
 }
 
 // 管理員登出
 exports.admin_logout = function (req, res) {
     //刪除cookie
-    res.clearCookie('admin');
+    res.clearCookie('information');
     res.redirect('/admin/login');
 };
 
@@ -108,13 +108,13 @@ exports.errorMsg = function (req, res) {
 // 管理員帳號資料
 exports.admin_account_view = function (req, res) {
     //如果cookies不存在，直接輸入網址，則導回登入頁面
-    if (!req.cookies.admin || req.cookies.admin == undefined) {
+    if (!req.cookies.information || req.cookies.information == undefined) {
         res.redirect('/admin/login');
     }else{
         req.getConnection(function (err, connection) {
             // 依據No去找出相關管理員資料
             // TODO:No要依據登入去做改變
-            no=req.cookies.admin.no;
+            no=req.cookies.information.no;
             connection.query('SELECT * FROM Admin Inner join Admin_Member on Admin_Member.Admin_No ' +
                 'Inner join Admin_Name on Admin_Name.Admin_No ' +
                 'WHERE Admin.No = ? AND Admin_Member.Admin_No = ? AND Admin_Name.Admin_No = ?', [no,no,no], function (err, rows) {
@@ -128,7 +128,8 @@ exports.admin_account_view = function (req, res) {
                             page_title: "帳號管理",
                             data: rows,
                             birth: Birth,
-                            admin_name:req.cookies.admin.name
+                            full_name:req.cookies.information.name,
+                            identity:req.cookies.information.identity
                         });
                     }
                 }
@@ -141,7 +142,7 @@ exports.admin_account_view = function (req, res) {
 exports.admin_account_view_save = function (req, res) {
     var input = JSON.parse(JSON.stringify(req.body));
     // TODO:no之後要自動帶入
-    var no=req.cookies.admin.no;
+    var no=req.cookies.information.no;
     // 不一定會更改密碼
     if(input.password==""){
         var admin_data = {
@@ -186,12 +187,13 @@ exports.admin_account_view_save = function (req, res) {
 // 會員門票查看
 exports.member_tickets = function (req, res) {
     //如果cookies不存在，直接輸入網址，則導回登入頁面
-    if (!req.cookies.admin || req.cookies.admin == undefined) {
+    if (!req.cookies.information || req.cookies.information == undefined) {
         res.redirect('/admin/login');
     }else{
         res.render('member_tickets', {
             page_title: "會員門票查看",
-            admin_name:req.cookies.admin.name
+            full_name:req.cookies.information.name,
+            identity:req.cookies.information.identity
         });
     }
 }
@@ -199,7 +201,7 @@ exports.member_tickets = function (req, res) {
 // 會員資料查看
 exports.member_data = function (req, res) {
     //如果cookies不存在，直接輸入網址，則導回登入頁面
-    if (!req.cookies.admin || req.cookies.admin == undefined) {
+    if (!req.cookies.information || req.cookies.information == undefined) {
         res.redirect('/admin/login');
     }else{
         req.getConnection(function (err, connection) {
@@ -211,8 +213,9 @@ exports.member_data = function (req, res) {
                     } else{
                         res.render('member_data', {
                             page_title: "會員資料查看",
-                            admin_name:req.cookies.admin.name,
-                            data: rows
+                            full_name:req.cookies.information.name,
+                            data: rows,
+                            identity:req.cookies.information.identity
                         })
                     }
             });
@@ -223,7 +226,7 @@ exports.member_data = function (req, res) {
 // 設施查看
 exports.facility_management = function (req, res) {
     //如果cookies不存在，直接輸入網址，則導回登入頁面
-    if (!req.cookies.admin || req.cookies.admin == undefined) {
+    if (!req.cookies.information || req.cookies.information == undefined) {
         res.redirect('/admin/login');
     }else{
         req.getConnection(function (err, connection) {
@@ -235,8 +238,9 @@ exports.facility_management = function (req, res) {
                     } else{
                         res.render('facility_management', {
                             page_title: "設施管理",
-                            admin_name:req.cookies.admin.name,
-                            data: rows
+                            full_name:req.cookies.information.name,
+                            data: rows,
+                            identity:req.cookies.information.identity
                         })
                     }
             });
@@ -247,13 +251,14 @@ exports.facility_management = function (req, res) {
 // 設施新增
 exports.facility_add = function (req, res) {
     //如果cookies不存在，直接輸入網址，則導回登入頁面
-    if (!req.cookies.admin || req.cookies.admin == undefined) {
+    if (!req.cookies.information || req.cookies.information == undefined) {
         res.redirect('/admin/login');
     }else{
         global.filename ="";
         res.render('facility_add', {
             page_title: "設施新增",
-            admin_name:req.cookies.admin.name
+            full_name:req.cookies.information.name,
+            identity:req.cookies.information.identity
         })
     }
 }
@@ -332,7 +337,7 @@ exports.facility_add_save = function (req, res) {
 exports.facility_management_edit= function (req, res) {
     var no=req.params.no;
     //如果cookies不存在，直接輸入網址，則導回登入頁面
-    if (!req.cookies.admin || req.cookies.admin == undefined) {
+    if (!req.cookies.information || req.cookies.information == undefined) {
         res.redirect('/admin/login');
     }else{
         global.filename ="";
@@ -345,8 +350,9 @@ exports.facility_management_edit= function (req, res) {
                     } else{
                         res.render('facility_edit', {
                             page_title: "設施編輯",
-                            admin_name:req.cookies.admin.name,
-                            data: rows
+                            full_name:req.cookies.information.name,
+                            data: rows,
+                            identity:req.cookies.information.identity
                         })
                     }
             });

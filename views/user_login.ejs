@@ -3,7 +3,7 @@
 <div id="content">
     <%- include layouts/side.ejs %>
     <div id="body">
-        <form method="post" id="loginForm" name="loginForm" action="/admin/admin_do_login">
+        <form method="post" id="loginForm" name="loginForm" action="/user/user_do_login">
             <table id="login_table" cellpadding='5'>
                 <tr>
                     <td>信箱</td>
@@ -19,7 +19,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="td_center">
-                        <input type="button" id="loginBtn" name="loginBtn" class="reg_btn" value="🔑 登入" onclick="ckform_admin_login()">
+                        <input type="button" id="loginBtn" name="loginBtn" class="reg_btn" value="🔑 登入" onclick="ckform_user_login()">
                     </td>
                 </tr>
             </table>
