@@ -1,4 +1,5 @@
 var crypto = require('crypto');
+var moment = require('moment');
 
 // 設置cookie
 function setCookie_user(res,name,user_no) {
@@ -116,7 +117,7 @@ exports.user_account_view = function (req, res) {
                 'Inner join User_Name on User_Name.User_No ' +
                 'WHERE User.No = ? AND User_Member.User_No = ? AND User_Name.User_No = ?', [no,no,no], function (err, rows) {
                     // 生日格式轉換為YYYY/MM/DD才可以帶入input date
-                    var Birth = (JSON.parse(JSON.stringify(rows))[0].Birth).slice(0, -14);
+                    var Birth = moment((JSON.parse(JSON.stringify(rows))[0].Birth).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD');
                     if (err) {
                         errorPrint("Error Selecting (routes：/user/account_view）: %s ", err);
                     } else {
@@ -227,8 +228,6 @@ exports.ticket_save = function (req, res) {
                     No:no,
                     Exist: 1
                 }
-            
-                // TODO:依照入園人數去限制新增
                 connection.query("INSERT INTO Ticket set ?", [ticket_data], function (err, row) {
                     if (err) {
                         errorPrint("Error Updating（routes：/user/ticket_save）: %s ", err);
@@ -260,7 +259,7 @@ exports.ticket_num_check = function (req, res) {
                 var arrary_count=[];
                 var arrar_num=JSON.parse(JSON.stringify(rows)).length;
                 for(var i=0;i<arrar_num;i++){
-                    arrary_date.push((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14));
+                    arrary_date.push(moment((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD'));
                     arrary_count.push(JSON.parse(JSON.stringify(rows))[i].Count);
                 }
                 for(var i=0;i<arrar_num;i++){

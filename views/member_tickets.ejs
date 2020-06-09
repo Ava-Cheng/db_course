@@ -2,6 +2,29 @@
 
 <div id="content">
     <%- include layouts/side.ejs %>
+    <!-- 判斷是否有資料 -->
+    <table id="member_table">
+        <tr>
+            <th>日期</th>
+            <th>總人數</th>
+        </tr>
+        <% if(arrary_date[0]){ %>
+            <% for(var i= 0;i < arrary_date.length;i++) { %>
+                <tr class="member_table_tr">
+                    <td class="td_center">
+                        <%= arrary_date[i]%>
+                    </td>
+                    <td class="td_center">
+                        <%= arrary_count[i]%>
+                    </td>
+                </tr>
+            <% } %>
+        <% }else{%>
+            <tr>
+                <td colspan="6" class="td_center"><span class="nullData">沒有資料</span></td>
+            </tr>
+        <% } %>
+    </table>
 </div>
 
 <%- include layouts/footer.ejs %>

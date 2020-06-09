@@ -1,5 +1,6 @@
 var crypto = require('crypto');
 var uuid = require('uuid');
+var moment = require('moment');
 
 // 設置cookie
 function setCookie_admin(res,name,admin_no) {
@@ -118,7 +119,7 @@ exports.admin_account_view = function (req, res) {
                 'Inner join Admin_Name on Admin_Name.Admin_No ' +
                 'WHERE Admin.No = ? AND Admin_Member.Admin_No = ? AND Admin_Name.Admin_No = ?', [no,no,no], function (err, rows) {
                     // 生日格式轉換為YYYY/MM/DD才可以帶入input date
-                    var Birth = (JSON.parse(JSON.stringify(rows))[0].Birth).slice(0, -14);
+                    var Birth = moment((JSON.parse(JSON.stringify(rows))[0].Birth).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD');
                     if (err) {
                         errorPrint("Error Selecting (routes：/admin/account_view）: %s ", err);
                     } else {
@@ -187,11 +188,29 @@ exports.member_tickets = function (req, res) {
     if (!req.cookies.information || req.cookies.information == undefined) {
         res.redirect('/admin/login');
     }else{
-        res.render('member_tickets', {
-            page_title: "會員門票查看",
-            full_name:req.cookies.information.name,
-            identity:req.cookies.information.identity
-        });
+        req.getConnection(function (err, connection) {
+            // 計算每個日期加總
+            connection.query("SELECT Date,count(Date) as Count FROM Ticket GROUP BY Date ORDER BY Date DESC", function (err, rows) {
+                if (err) {
+                    errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
+                }else{
+                    var arrary_date=[];
+                    var arrary_count=[];
+                    var arrar_num=JSON.parse(JSON.stringify(rows)).length;
+                    for(var i=0;i<arrar_num;i++){
+                        arrary_date.push(moment((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD'));
+                        arrary_count.push((JSON.parse(JSON.stringify(rows)))[i].Count);
+                    }
+                    res.render('member_tickets', {
+                        page_title: "會員門票查看",
+                        full_name:req.cookies.information.name,
+                        identity:req.cookies.information.identity,
+                        arrary_date:arrary_date,
+                        arrary_count:arrary_count
+                    });
+                }
+            })
+        })
     }
 }
 

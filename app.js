@@ -85,7 +85,7 @@ app.post('/admin/error_msg', admin.errorMsg);
 app.get('/admin/account_view', admin.admin_account_view);
 // 執行修改帳號資訊
 app.post('/admin/account_view_save', admin.admin_account_view_save);
-// 會員門票查看
+// 門票管理
 app.get('/admin/member_tickets', admin.member_tickets);
 // 會員資料查看
 app.get('/admin/member_data', admin.member_data);
