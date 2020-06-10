@@ -62,3 +62,50 @@ function check_ticket_num(user_no){
         }
     })
 }
+
+// 點擊門票，顯示預約時段
+function click_ticket(facility_date){
+    $("#facility_appt_date").val(facility_date);
+    // 顯示下一個步驟
+    $("#step2").show();
+}
+
+// 點擊預約時段，顯示預約設施
+function click_time(ticket_time){
+    $("#ticket_time").val(ticket_time);
+    // 顯示下一個步驟
+    $("#step3").show();
+}
+
+// 點擊預約設施
+function click_facility_appt(facility_name,facility_no){
+    $("#facility_appt_facility_name").val(facility_name);
+    $("#facility_appt_no").val(facility_no);
+    // 顯示下一個步驟
+    $("#step4").show();
+}
+
+// 錯誤訊息接收 設施預約
+function facility_appt_error_msg(){
+    var frm = document.getElementById("facility_appt_form");
+    var facility_no=$("#facility_appt_no").val();
+    var date=$("#facility_appt_date").val();
+    var time=$("#ticket_time").val();
+    data={"facility_no":facility_no,"date":date,"time":time};
+    $.ajax({
+        data: data,
+        url: '/user/facility_appt/error_msg',
+        dataType: 'json',
+        type: 'POST',
+        cache: false,
+        timeout: 60,
+        success: function (msg) {
+            if(msg.msg=="您已重複預約。" || msg.msg=="十分抱歉，預約人數已達上限，請更改預約時段/設施。"){
+                alert(msg.msg);
+            }
+        },
+        error: function (error) {
+            frm.submit();
+        }
+    })
+}

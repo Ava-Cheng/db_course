@@ -24,6 +24,6 @@ function data_list(name,info,images_name){
     // 動態更改設施圖片
     var facility_view = document.getElementById("facility_view");
     facility_view.src ="/images/facility/"+images_name;
-    //顯示面試詳細資訊
+    //顯示詳細資訊
     $("#right").show();
 }

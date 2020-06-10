@@ -1,0 +1,47 @@
+<%- include layouts/header.ejs %>
+
+<div id="content">
+    <%- include layouts/side.ejs %>
+    <div id="body">
+        <div id="step1">
+            <h3>步驟1:選擇要預約日期（依據已經預訂門票）</h3>預約日期：
+            <% for(var i= 0;i < data.length;i++) { %>
+                <input type="text" id="facility_date" name="facility_date" value="<%=data[i]%>" readonly="readonly" onclick="click_ticket('<%=data[i]%>')">
+            <% } %>
+        </div>
+        <div id="step2">
+            <h3>步驟2:選擇要預約時段</h3>
+            預約時段：<input type="radio" name="time" value="10:00" onclick="click_time('10:00')"> 10:00
+                    <input type="radio" name="time" value="11:00" onclick="click_time('11:00')"> 11:00
+                    <input type="radio" name="time" value="12:00" onclick="click_time('12:00')"> 12:00
+                    <input type="radio" name="time" value="13:00" onclick="click_time('13:00')"> 13:00
+                    <input type="radio" name="time" value="14:00" onclick="click_time('14:00')"> 14:00
+                    <input type="radio" name="time" value="15:00" onclick="click_time('15:00')"> 15:00
+                    <input type="radio" name="time" value="16:00" onclick="click_time('16:00')"> 16:00
+            <p>
+        </div>
+        <div id="step3">
+            <h3>步驟3:選擇要預約設施</h3>
+            預約設施：
+            <% for(var i= 0;i < data2.length;i++) { %>
+                <input type="text" id="facility_appt_name" name="facility_appt_name" value="🚀 <%=data2[i].Name%>" readonly="readonly" onclick="click_facility_appt('<%=data2[i].Name%>','<%=data2[i].No%>')">
+            <% } %>
+        </div>
+        <div id="step4">
+            <form method="post" id="facility_appt_form" name="facility_appt_form" action="/user/facility_appt_save">
+                <h3>步驟4:最後確認（如有誤，請往回更改）</h3>
+                <input type="hidden" id="facility_appt_no" name="facility_appt_no" value="" readonly="readonly">
+                預約日期：<input type="text" id="facility_appt_date" name="facility_appt_date" value="" readonly="readonly" onfocus="this.blur()">
+                預約時段：<input type="text" id="ticket_time" name="ticket_time" value="" readonly="readonly" onfocus="this.blur()">
+                預約設施：<input type="text" id="facility_appt_facility_name" name="facility_appt_facility_name" value="" readonly="readonly" onfocus="this.blur()">
+                <div class="div_center">
+                    &nbsp; <input type="button" name="cancel" value="✘ 取消" class="cancel" onClick="go_back();">
+                    <input type="button" name="facility_appt_btn" id="facility_appt_btn" class="facility_appt_btn" value="✚ 預約" onclick="facility_appt_error_msg()">
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</div>
+
+<%- include layouts/footer.ejs %>

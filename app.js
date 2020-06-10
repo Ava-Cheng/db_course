@@ -62,7 +62,6 @@ app.get('/facilities_information', routes.facilities_information);
 // 設施資訊
 app.get('/facility_information', routes.facility_information);
 
-
 // 帳號管理
 // 會員註冊
 app.get('/reg/user', accountManagement.user_reg);
@@ -119,12 +118,18 @@ app.post('/user/error_msg', user.errorMsg);
 app.get('/user/account_view', user.user_account_view);
 // 執行修改帳號資訊
 app.post('/user/account_view_save', user.user_account_view_save);
-// 預定門票
+// 預訂門票
 app.get('/user/ticket', user.ticket);
 // 門票人數確認
 app.post('/user/ticket/num_check', user.ticket_num_check);
-// 執行預定門票
+// 執行預訂門票
 app.post('/user/ticket_save', user.ticket_save);
+// 設施預約
+app.get('/user/facility_appt', user.facility_appt);
+// 設施預約錯誤訊息
+app.post('/user/facility_appt/error_msg', user.facility_appt_errorMsg);
+// 執行設施預約
+app.post('/user/facility_appt_save', user.facility_appt_save);
 // 目前訂單
 app.get('/user/order', user.order);
 

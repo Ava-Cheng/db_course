@@ -180,7 +180,7 @@ exports.user_account_view_save = function (req, res) {
     })
 }
 
-// 預定門票
+// 預訂門票
 exports.ticket = function (req, res) {
     // 如果已經登入則直接跳轉
     if (!req.cookies.information || req.cookies.information == undefined) {
@@ -193,7 +193,7 @@ exports.ticket = function (req, res) {
                 'Inner join User_Name on User_Name.User_No ' +
                 'WHERE User.No = ? AND User_Member.User_No = ? AND User_Name.User_No = ?', [no,no,no], function (err, rows) {
                 res.render('ticket', {
-                    page_title: "預定門票",
+                    page_title: "預訂門票",
                     full_name:req.cookies.information.name,
                     identity:req.cookies.information.identity,
                     data:rows,
@@ -204,7 +204,7 @@ exports.ticket = function (req, res) {
     }
 }
 
-// 執行預定門票
+// 執行預訂門票
 exports.ticket_save = function (req, res) {
     var input = JSON.parse(JSON.stringify(req.body));
     var user_no=req.cookies.information.no;
@@ -238,7 +238,116 @@ exports.ticket_save = function (req, res) {
                         errorPrint("Error Updating（routes：/user/ticket_save）: %s ", err);
                     }
                 });
-                // TODO:跳到設施預約頁面
+                res.redirect('/user/facility_appt');
+            }
+        })
+    })
+}
+
+// 設施預約
+exports.facility_appt= function (req, res) {
+    // 如果已經登入則直接跳轉
+    if (!req.cookies.information || req.cookies.information == undefined) {
+        res.redirect('/user/login');
+    }else{
+        req.getConnection(function (err, connection) {
+            connection.query("SELECT Date FROM Ticket GROUP BY Date ORDER BY Date DESC", function (err, rows) {
+                connection.query('SELECT * FROM Facility Facility INNER JOIN ( SELECT * FROM Facility_Check) Facility_Check ON Facility.No=Facility_Check.No ' +
+                'WHERE Facility_Check.Exist = ?', [1], function (err, rows2) {
+                    // 門票日期處理
+                    var arrary_date=[];
+                    var arrary_num=JSON.parse(JSON.stringify(rows)).length;
+                    for(var i=0;i<arrary_num;i++){
+                        arrary_date.push(moment((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD'));
+                    }
+                    res.render('facility_appt', {
+                        page_title: "設施預約",
+                        full_name:req.cookies.information.name,
+                        identity:req.cookies.information.identity,
+                        data:arrary_date,
+                        data2:rows2
+                    });
+                })
+            })
+        })
+    }
+}
+
+// 判斷預約是否重複或已達預約上限
+exports.facility_appt_errorMsg = function (req, res) {
+    var facility_no=req.body.facility_no;
+    var date=req.body.date;
+    var time=req.body.time;
+    var user_no=req.cookies.information.no;
+    req.getConnection(function (err, connection) {
+        connection.query("SELECT * FROM Facility_Appt WHERE Facility_No = ? AND User_No = ? AND Date = ? AND Time = ?", [facility_no,user_no,date,time], function (err, rows) {
+            if (err) {
+                errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
+            } else{
+                if(rows!=''){
+                    res.send({ msg: "您已重複預約。" });
+                }else{
+                    connection.query("SELECT Available_PER FROM Facility WHERE No = ? ", [facility_no], function (err, rows) {
+                        if (err) {
+                            errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
+                        }else{
+                            var available_PER=JSON.parse(JSON.stringify(rows))[0].Available_PER;
+                            connection.query("SELECT count(Date) as Count FROM Facility_Appt WHERE Facility_No=? ORDER BY Date", [facility_no], function (err, rows) {
+                                if (err) {
+                                    errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
+                                }else{
+                                    if(rows[0].Count==available_PER){
+                                        res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
+                                    }
+                                }
+                            })
+                        }
+                    })
+                }
+            }
+        })
+    })
+}
+
+// 執行設施預約
+exports.facility_appt_save = function (req, res) {
+    var input = JSON.parse(JSON.stringify(req.body));
+    var facility_no=input.facility_appt_no;
+    var date=input.facility_appt_date;
+    var time=input.ticket_time;
+    var user_no=req.cookies.information.no;
+    req.getConnection(function (err, connection) {
+        // 撈出最後一筆編號
+        connection.query("SELECT No FROM `Facility_Appt` ORDER BY No DESC LIMIT 0 , 1", function (err, rows) {
+            if (err) {
+                errorPrint("Error Selecting（routes：/user/facility_appt_save）: %s ", err);
+            }else{
+                // 第一次新增會撈不到
+                if (String(rows[0])=="undefined"){
+                    no=1
+                }else{
+                    var no = Number(rows[0].No)+1;
+                }
+                var facility_appt_data = {
+                    Facility_No: facility_no,
+                    User_No:user_no,
+                    Date:date,
+                    Time:time
+                }
+                var facility_appt_check_data = {
+                    No:no,
+                    Exist: 1
+                }
+                connection.query("INSERT INTO Facility_Appt set ?", [facility_appt_data], function (err, row) {
+                    if (err) {
+                        errorPrint("Error Updating（routes：/user/facility_appt_save）: %s ", err);
+                    }
+                });
+                connection.query("INSERT INTO Facility_Appt_Check set ?  ", [facility_appt_check_data], function (err, row) {
+                    if (err) {
+                        errorPrint("Error Updating（routes：/user/facility_appt_save）: %s ", err);
+                    }
+                });
                 res.redirect('/user/order');
             }
         })
@@ -257,12 +366,12 @@ exports.ticket_num_check = function (req, res) {
             }else{
                 var arrary_date=[];
                 var arrary_count=[];
-                var arrar_num=JSON.parse(JSON.stringify(rows)).length;
-                for(var i=0;i<arrar_num;i++){
+                var arrary_num=JSON.parse(JSON.stringify(rows)).length;
+                for(var i=0;i<arrary_num;i++){
                     arrary_date.push(moment((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD'));
                     arrary_count.push(JSON.parse(JSON.stringify(rows))[i].Count);
                 }
-                for(var i=0;i<arrar_num;i++){
+                for(var i=0;i<arrary_num;i++){
                     connection.query('SELECT Date FROM Ticket WHERE No = ? AND  Date = ?', [user_no,book_date], function (err, rows) {
                         if(rows!=''){
                             res.send({ msg: "您已經預訂過囉。"});

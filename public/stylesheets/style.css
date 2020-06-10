@@ -196,7 +196,7 @@ table{
 #reg_table,#login_table,#ticketBtn_table{
     margin:0px auto 0px auto;
 }
-.td_center{
+.td_center,.div_center{
     vertical-align: center;
     text-align: center;
 }
@@ -275,6 +275,37 @@ table{
     top:300px;
     left:400px;
 }
+
+/*設施預約*/
+#facility_appt_name{
+    background: rgba(233, 152, 179, 0.808);
+    width: 160px;
+    height: 30px;
+    vertical-align: center;
+    text-align: center;
+    border-radius:5px;
+    border: none;
+}
+#step2,#step3,#step4{
+    display: none;
+    width: 750px;
+}
+#facility_date{
+    background: rgba(233, 152, 179, 0.808);
+    width: 160px;
+    height: 30px;
+    vertical-align: center;
+    text-align: center;
+    border-radius:5px;
+    border: none;
+}
+#facility_appt_date,#ticket_time,#facility_appt_facility_name{
+    background: none;
+    vertical-align: center;
+    border: none;
+    color: rgb(0, 0, 0);
+}
+
 /*按鈕*/
 .add_btn{
     -webkit-appearance:button;
@@ -285,7 +316,7 @@ table{
     border: rgb(223, 222, 222) 1px solid;
     color: rgb(255, 255, 255);
 }
-.edit_btn,.reg_btn,.loginBtn,.facility_btn,.ticket_btn{
+.edit_btn,.reg_btn,.loginBtn,.facility_btn,.ticket_btn,.facility_appt_btn{
     -webkit-appearance:button;
     width:65px;
     height:25px;
