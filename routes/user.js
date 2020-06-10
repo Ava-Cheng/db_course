@@ -423,9 +423,9 @@ exports.order_facility = function (req, res) {
         var user_no=req.cookies.information.no;
         var date=moment(req.params.date).format('YYYY-MM-DD');
         req.getConnection(function (err, connection) {
-            connection.query('SELECT * FROM Facility_Appt Facility_Appt INNER JOIN ( SELECT * FROM Facility_Appt_Check) Facility_Appt_Check ON Facility_Appt.No=Facility_Appt_Check.No ' +
+            connection.query('SELECT Facility_Appt.No,Facility_Appt.Facility_No,Facility_Appt.User_No,Facility_Appt.Date,Facility_Appt.Time FROM Facility_Appt Facility_Appt INNER JOIN ( SELECT * FROM Facility_Appt_Check) Facility_Appt_Check ON Facility_Appt.No=Facility_Appt_Check.No ' +
                 'INNER JOIN ( SELECT * FROM Facility) Facility ON Facility_Appt.Facility_No=Facility.No ' +
-                'WHERE Facility_Appt_Check.Exist = ? AND Facility_Appt.User_No= ?  AND Facility_Appt.Date=? ORDER BY Date,Time,Name DESC',[1,user_no,date], function (err, rows) {
+                'WHERE Facility_Appt_Check.Exist = ? AND Facility_Appt.User_No= ? AND Facility_Appt.Date=? ORDER BY Date,Time,Name DESC',[1,user_no,date], function (err, rows) {
                 // 日期處理
                 var arrary_date=[];
                 var arrary_num=JSON.parse(JSON.stringify(rows)).length;
@@ -444,8 +444,8 @@ exports.order_facility = function (req, res) {
     }
 }
 
-// 執行門票刪除
-exports.ticket_del= function (req, res) {
+// 執行訂單刪除-門票
+exports.ticket_appt_del= function (req, res) {
     var no=req.params.no;
     var ticket_check_data={
         Exist: 0
@@ -456,6 +456,24 @@ exports.ticket_del= function (req, res) {
                 errorPrint("Error Updating（routes：/user/order/ticket_del/:no）: %s ", err);
             }else{
                 res.redirect('/user/order');
+            }
+        });
+    })
+}
+
+// 執行訂單刪除-設施
+exports.facility_appt_del= function (req, res) {
+    var no=req.params.no;
+    var date=req.params.date;
+    var facility_appt_check_data={
+        Exist: 0
+    };
+    req.getConnection(function (err, connection) {
+        connection.query("UPDATE Facility_Appt_Check SET ? WHERE No = ? ", [facility_appt_check_data,no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/user/order/facility/facility_del/:no）: %s ", err);
+            }else{
+                res.redirect('/user/order/facility/'+date);
             }
         });
     })

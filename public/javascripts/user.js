@@ -120,12 +120,12 @@ function go_add_facility(){
     window.location.href = '/user/facility_appt';
 }
 
-// 目前訂單查看
+// 目前訂單查看-設施
 function go_edit_ticket(date){
     window.location.href = '/user/order/facility/'+date;
 }
 
-// 目前訂單刪除
+// 目前訂單刪除-門票
 function go_del_ticket(no){
     var ticket_view_form = document.getElementById("ticket_view_form");
     var isClick = true;
@@ -144,4 +144,25 @@ function go_del_ticket(no){
         }, 1500); //不能重複點擊
     }
     ticket_view_form.submit();
+}
+
+// 目前訂單刪除-門票
+function go_del_facility(no,date){
+    var facility_view_form = document.getElementById("facility_view_form");
+    var isClick = true;
+    if (isClick) {
+        isClick = false;
+        //刪除確認
+        var result = confirm('您確定要刪除嗎？');
+        if (result == true) {
+            facility_view_form.action = '/user/order/facility/facility_del/'+no+'/'+date;
+            alert('已刪除');
+        } else {
+            return false;
+        }
+        setTimeout(function () {
+            isClick = true;
+        }, 1500); //不能重複點擊
+    }
+    facility_view_form.submit();
 }
