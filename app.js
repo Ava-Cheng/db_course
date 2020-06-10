@@ -130,9 +130,11 @@ app.get('/user/facility_appt', user.facility_appt);
 app.post('/user/facility_appt/error_msg', user.facility_appt_errorMsg);
 // 執行設施預約
 app.post('/user/facility_appt_save', user.facility_appt_save);
-// 目前訂單
+// 目前訂單-門票
 app.get('/user/order', user.order);
-// 執行訂單刪除
+// 目前訂單-設施
+app.get('/user/order/facility/:date', user.order_facility);
+// 執行訂單刪除-門票
 app.post('/user/order/ticket_del/:no', user.ticket_del);
 
 // 失敗

@@ -284,7 +284,7 @@ exports.facility_appt= function (req, res) {
     }else{
         var user_no=req.cookies.information.no;
         req.getConnection(function (err, connection) {
-            connection.query("SELECT Date FROM Ticket WHERE User_No=? GROUP BY Date ORDER BY Date DESC",[user_no], function (err, rows) {
+            connection.query("SELECT * FROM Ticket Ticket INNER JOIN ( SELECT * FROM Ticket_Check) Ticket_Check ON Ticket_Check.No=Ticket.No WHERE User_No=? AND Ticket_Check.Exist=? ORDER BY Date DESC",[user_no,1], function (err, rows) {
                 connection.query('SELECT * FROM Facility Facility INNER JOIN ( SELECT * FROM Facility_Check) Facility_Check ON Facility.No=Facility_Check.No ' +
                 'WHERE Facility_Check.Exist = ?', [1], function (err, rows2) {
                     // 門票日期處理
@@ -387,7 +387,7 @@ exports.facility_appt_save = function (req, res) {
     })
 }
 
-// 會員目前訂單
+// 會員目前訂單-門票
 exports.order = function (req, res) {
     // 如果已經登入則直接跳轉
     if (!req.cookies.information || req.cookies.information == undefined) {
@@ -403,7 +403,37 @@ exports.order = function (req, res) {
                     arrary_date.push(moment((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD'));
                 }
                 res.render('user_order', {
-                    page_title: "目前訂單",
+                    page_title: "目前訂單-門票",
+                    full_name:req.cookies.information.name,
+                    identity:req.cookies.information.identity,
+                    data:rows,
+                    data2:arrary_date
+                });
+            })
+        })
+    }
+}
+
+// 會員目前訂單-設施
+exports.order_facility = function (req, res) {
+    // 如果已經登入則直接跳轉
+    if (!req.cookies.information || req.cookies.information == undefined) {
+        res.redirect('/user/login');
+    }else{
+        var user_no=req.cookies.information.no;
+        var date=moment(req.params.date).format('YYYY-MM-DD');
+        req.getConnection(function (err, connection) {
+            connection.query('SELECT * FROM Facility_Appt Facility_Appt INNER JOIN ( SELECT * FROM Facility_Appt_Check) Facility_Appt_Check ON Facility_Appt.No=Facility_Appt_Check.No ' +
+                'INNER JOIN ( SELECT * FROM Facility) Facility ON Facility_Appt.Facility_No=Facility.No ' +
+                'WHERE Facility_Appt_Check.Exist = ? AND Facility_Appt.User_No= ?  AND Facility_Appt.Date=? ORDER BY Date,Time,Name DESC',[1,user_no,date], function (err, rows) {
+                // 日期處理
+                var arrary_date=[];
+                var arrary_num=JSON.parse(JSON.stringify(rows)).length;
+                for(var i=0;i<arrary_num;i++){
+                    arrary_date.push(moment((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD'));
+                }
+                res.render('user_order_facility', {
+                    page_title: "目前訂單-設施",
                     full_name:req.cookies.information.name,
                     identity:req.cookies.information.identity,
                     data:rows,

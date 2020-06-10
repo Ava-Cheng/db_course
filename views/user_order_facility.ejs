@@ -1,0 +1,45 @@
+<%- include layouts/header.ejs %>
+
+<div id="content">
+    <%- include layouts/side.ejs %>
+    <table id="user_order_facility_table">
+        <tr>
+            <th style="width: 10%;">編號</th>
+            <th style="width: 20%;">設施</th>
+            <th style="width: 20%;">日期</th>
+            <th style="width: 20%;">時間</th>
+            <th style="width: 30%;"><input type="button" value="✚ 新增" class="add_btn" onclick="go_add_facility()"></th>
+        </tr>
+        <!-- 判斷是否有資料 -->
+        <% if(data[0]){ %>
+            <% for(var i= 0;i < data.length;i++) { %>
+                <tr class="user_order_facility_table_tr">
+                    <td class="td_center">
+                        <%= data[i].No%>
+                    </td>
+                    <td class="td_center">
+                        <%= data[i].Name%>
+                    </td>
+                    <td class="td_center">
+                        <%=data2[i]%>
+                    </td>
+                    <td class="td_center">
+                        <%=data[i].Time%>
+                    </td>
+                    <td class="td_center">
+                        <form method="post" name="facility_view_form" id="facility_view_form" action="">
+                            <input type="button" class="del_btn" value="✘ 刪除" onclick="go_del_facility('<%= data[i].No%>')">
+                            <input type="button" class="edit_btn" value="✎ 編輯" onclick="go_edit_facility('<%=data2[i]%>')">
+                        </form>
+                    </td>
+                </tr>
+            <% } %>
+        <% }else{%>
+            <tr>
+                <td colspan="6" class="td_center"><span class="nullData">沒有資料</span></td>
+            </tr>
+        <% } %>
+    </table>
+</div>
+
+<%- include layouts/footer.ejs %>

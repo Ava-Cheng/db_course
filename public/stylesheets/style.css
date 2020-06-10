@@ -208,25 +208,25 @@ table{
     width: 127px;
 }
 
-/*會員資料查看*//*設施管理*/
-#member_table,#facility_management_table{
+/*會員資料查看*//*設施管理*//*目前訂單-設施*/
+#member_table,#facility_management_table,#user_order_facility_table{
     margin-left:auto; 
     margin-right:auto;
     width: 730px;
     overflow:auto;
 }
-#member_table th,#facility_management_table th{
+#member_table th,#facility_management_table th,#user_order_facility_table th{
     background: rgba(25, 122, 248, 0.829);
     color: rgb(255, 255, 255);
     height: 30px;
     border-top: black solid 1px;
     border-bottom: black solid 1px;
 }
-.member_table_tr:nth-child(even),.facility_management_table_tr:nth-child(even)  {
+.member_table_tr:nth-child(even),.facility_management_table_tr:nth-child(even),.user_order_facility_table_tr:nth-child(even)  {
     background: rgb(223, 222, 222);
     height: 30px;
 }
-.member_table_tr:nth-child(odd),.facility_management_table_tr:nth-child(odd) {
+.member_table_tr:nth-child(odd),.facility_management_table_tr:nth-child(odd),.user_order_facility_table_tr:nth-child(odd) {
     background: rgb(255, 255, 255);
     height: 30px;
 }

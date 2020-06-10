@@ -21,7 +21,7 @@
                     <td class="td_center">
                         <form method="post" name="ticket_view_form" id="ticket_view_form" action="">
                             <input type="button" class="del_btn" value="✘ 刪除" onclick="go_del_ticket('<%= data[i].No%>')">
-                            <input type="button" class="edit_btn" value="★ 查看" onclick="go_edit_ticket('<%= data[i].No%>')">
+                            <input type="button" class="edit_btn" value="★ 查看" onclick="go_edit_ticket('<%=data2[i]%>')">
                         </form>
                     </td>
                 </tr>

@@ -110,14 +110,19 @@ function facility_appt_error_msg(){
     })
 }
 
-// 新增訂單
+// 新增訂單-門票
 function go_add_ticket(){
     window.location.href = '/user/ticket';
 }
 
+// 新增訂單-設施
+function go_add_facility(){
+    window.location.href = '/user/facility_appt';
+}
+
 // 目前訂單查看
-function go_edit_ticket(no){
-    window.location.href = '/admin/facility_management/edit/'+no;
+function go_edit_ticket(date){
+    window.location.href = '/user/order/facility/'+date;
 }
 
 // 目前訂單刪除
