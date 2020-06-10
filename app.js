@@ -132,6 +132,8 @@ app.post('/user/facility_appt/error_msg', user.facility_appt_errorMsg);
 app.post('/user/facility_appt_save', user.facility_appt_save);
 // 目前訂單
 app.get('/user/order', user.order);
+// 執行訂單刪除
+app.post('/user/order/ticket_del/:no', user.ticket_del);
 
 // 失敗
 app.get('/failure', routes.failure)

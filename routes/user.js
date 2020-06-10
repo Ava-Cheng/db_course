@@ -204,6 +204,38 @@ exports.ticket = function (req, res) {
     }
 }
 
+// 門票人數確認
+exports.ticket_num_check = function (req, res) {
+    var book_date = req.body.book_date;
+    var user_no = req.body.user_no;
+    req.getConnection(function (err, connection) {
+        // 計算每個日期加總
+        connection.query("SELECT Date,count(Date) as Count FROM Ticket WHERE User_No=? GROUP BY Date",[user_no], function (err, rows) {
+            if (err) {
+                errorPrint("Error Selecting（routes：/user/ticket_save）: %s ", err);
+            }else{
+                var arrary_date=[];
+                var arrary_count=[];
+                var arrary_num=JSON.parse(JSON.stringify(rows)).length;
+                for(var i=0;i<arrary_num;i++){
+                    arrary_date.push(moment((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD'));
+                    arrary_count.push(JSON.parse(JSON.stringify(rows))[i].Count);
+                }
+                for(var i=0;i<arrary_num;i++){
+                    connection.query('SELECT Date FROM Ticket WHERE No = ? AND  Date = ?', [user_no,book_date], function (err, rows) {
+                        if(rows!=''){
+                            res.send({ msg: "您已經預訂過囉。"});
+                        }else if(book_date==arrary_date[5] &&  arrary_count[5]==500){// 500為自訂的入園人數
+                            res.send({ msg: "當天預定人數已經額滿，請擇日選擇。"});
+                        }
+                    })
+                    
+                }
+            }
+        })
+    })
+}
+
 // 執行預訂門票
 exports.ticket_save = function (req, res) {
     var input = JSON.parse(JSON.stringify(req.body));
@@ -250,8 +282,9 @@ exports.facility_appt= function (req, res) {
     if (!req.cookies.information || req.cookies.information == undefined) {
         res.redirect('/user/login');
     }else{
+        var user_no=req.cookies.information.no;
         req.getConnection(function (err, connection) {
-            connection.query("SELECT Date FROM Ticket GROUP BY Date ORDER BY Date DESC", function (err, rows) {
+            connection.query("SELECT Date FROM Ticket WHERE User_No=? GROUP BY Date ORDER BY Date DESC",[user_no], function (err, rows) {
                 connection.query('SELECT * FROM Facility Facility INNER JOIN ( SELECT * FROM Facility_Check) Facility_Check ON Facility.No=Facility_Check.No ' +
                 'WHERE Facility_Check.Exist = ?', [1], function (err, rows2) {
                     // 門票日期處理
@@ -354,49 +387,46 @@ exports.facility_appt_save = function (req, res) {
     })
 }
 
-// 門票人數確認
-exports.ticket_num_check = function (req, res) {
-    var book_date = req.body.book_date;
-    var user_no = req.body.user_no;
-    req.getConnection(function (err, connection) {
-        // 計算每個日期加總
-        connection.query("SELECT Date,count(Date) as Count FROM Ticket GROUP BY Date", function (err, rows) {
-            if (err) {
-                errorPrint("Error Selecting（routes：/user/ticket_save）: %s ", err);
-            }else{
-                var arrary_date=[];
-                var arrary_count=[];
-                var arrary_num=JSON.parse(JSON.stringify(rows)).length;
-                for(var i=0;i<arrary_num;i++){
-                    arrary_date.push(moment((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD'));
-                    arrary_count.push(JSON.parse(JSON.stringify(rows))[i].Count);
-                }
-                for(var i=0;i<arrary_num;i++){
-                    connection.query('SELECT Date FROM Ticket WHERE No = ? AND  Date = ?', [user_no,book_date], function (err, rows) {
-                        if(rows!=''){
-                            res.send({ msg: "您已經預訂過囉。"});
-                        }else if(book_date==arrary_date[5] &&  arrary_count[5]==500){// 500為自訂的入園人數
-                            res.send({ msg: "當天預定人數已經額滿，請擇日選擇。"});
-                        }
-                    })
-                    
-                }
-            }
-        })
-    })
-}
-
 // 會員目前訂單
 exports.order = function (req, res) {
     // 如果已經登入則直接跳轉
     if (!req.cookies.information || req.cookies.information == undefined) {
         res.redirect('/user/login');
     }else{
-        res.render('user_order', {
-            page_title: "目前訂單",
-            full_name:req.cookies.information.name,
-            identity:req.cookies.information.identity
-        });
+        var user_no=req.cookies.information.no;
+        req.getConnection(function (err, connection) {
+            connection.query("SELECT * FROM Ticket Ticket INNER JOIN ( SELECT * FROM Ticket_Check) Ticket_Check ON Ticket.No=Ticket_Check.No WHERE Ticket_Check.Exist = ? AND Ticket.User_No= ? ",[1,user_no], function (err, rows) {
+                // 門票日期處理
+                var arrary_date=[];
+                var arrary_num=JSON.parse(JSON.stringify(rows)).length;
+                for(var i=0;i<arrary_num;i++){
+                    arrary_date.push(moment((JSON.parse(JSON.stringify(rows))[i].Date).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD'));
+                }
+                res.render('user_order', {
+                    page_title: "目前訂單",
+                    full_name:req.cookies.information.name,
+                    identity:req.cookies.information.identity,
+                    data:rows,
+                    data2:arrary_date
+                });
+            })
+        })
     }
 }
 
+// 執行門票刪除
+exports.ticket_del= function (req, res) {
+    var no=req.params.no;
+    var ticket_check_data={
+        Exist: 0
+    };
+    req.getConnection(function (err, connection) {
+        connection.query("UPDATE Ticket_Check SET ? WHERE No = ? ", [ticket_check_data,no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/user/order/ticket_del/:no）: %s ", err);
+            }else{
+                res.redirect('/user/order');
+            }
+        });
+    })
+}

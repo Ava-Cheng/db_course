@@ -109,3 +109,34 @@ function facility_appt_error_msg(){
         }
     })
 }
+
+// 新增訂單
+function go_add_ticket(){
+    window.location.href = '/user/ticket';
+}
+
+// 目前訂單查看
+function go_edit_ticket(no){
+    window.location.href = '/admin/facility_management/edit/'+no;
+}
+
+// 目前訂單刪除
+function go_del_ticket(no){
+    var ticket_view_form = document.getElementById("ticket_view_form");
+    var isClick = true;
+    if (isClick) {
+        isClick = false;
+        //刪除確認
+        var result = confirm('您確定要刪除嗎？');
+        if (result == true) {
+            ticket_view_form.action = '/user/order/ticket_del/'+no;
+            alert('已刪除');
+        } else {
+            return false;
+        }
+        setTimeout(function () {
+            isClick = true;
+        }, 1500); //不能重複點擊
+    }
+    ticket_view_form.submit();
+}

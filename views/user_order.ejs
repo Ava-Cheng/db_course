@@ -2,6 +2,36 @@
 
 <div id="content">
     <%- include layouts/side.ejs %>
+    <table id="member_table">
+        <tr>
+            <th style="width: 30%;">編號</th>
+            <th style="width: 40%;">預定日期</th>
+            <th style="width: 30%;"><input type="button" value="✚ 新增" class="add_btn" onclick="go_add_ticket()"></th>
+        </tr>
+        <!-- 判斷是否有資料 -->
+        <% if(data[0]){ %>
+            <% for(var i= 0;i < data.length;i++) { %>
+                <tr class="member_table_tr">
+                    <td class="td_center">
+                        <%= data[i].No%>
+                    </td>
+                    <td class="td_center">
+                        <%=data2[i]%>
+                    </td>
+                    <td class="td_center">
+                        <form method="post" name="ticket_view_form" id="ticket_view_form" action="">
+                            <input type="button" class="del_btn" value="✘ 刪除" onclick="go_del_ticket('<%= data[i].No%>')">
+                            <input type="button" class="edit_btn" value="★ 查看" onclick="go_edit_ticket('<%= data[i].No%>')">
+                        </form>
+                    </td>
+                </tr>
+            <% } %>
+        <% }else{%>
+            <tr>
+                <td colspan="6" class="td_center"><span class="nullData">沒有資料</span></td>
+            </tr>
+        <% } %>
+    </table>
 </div>
 
 <%- include layouts/footer.ejs %>
