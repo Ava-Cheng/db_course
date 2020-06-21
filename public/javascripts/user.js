@@ -158,7 +158,7 @@ function go_del_ticket(no){
 }
 
 // 目前訂單刪除-設施
-function go_del_facility(no,date){
+function go_del_facility_appt(no,date){
     var facility_view_form = document.getElementById("facility_view_form");
     var isClick = true;
     if (isClick) {
