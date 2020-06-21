@@ -156,7 +156,7 @@ table{
 }
 
 /*帳號管理*/
-.input_account_view,.input_login,.input_ticket{
+.input_account_view,.input_login,.input_ticket,.input_reg{
     width: 155px;
 }
 
