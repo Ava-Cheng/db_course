@@ -190,7 +190,7 @@ exports.member_tickets = function (req, res) {
     }else{
         req.getConnection(function (err, connection) {
             // 計算每個日期加總
-            connection.query("SELECT Date,count(Date) as Count FROM Ticket GROUP BY Date ORDER BY Date DESC", function (err, rows) {
+            connection.query("SELECT Date,count(Date) as Count FROM Ticket INNER JOIN ( SELECT * FROM Ticket_Check) Ticket_Check ON Ticket_Check.No=Ticket.No WHERE Ticket_Check.Exist=? GROUP BY Date ORDER BY Date DESC",[1], function (err, rows) {
                 if (err) {
                     errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
                 }else{
