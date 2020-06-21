@@ -86,12 +86,12 @@ function click_facility_appt(facility_name,facility_no){
 }
 
 // 錯誤訊息接收 設施預約
-function facility_appt_error_msg(){
+function facility_appt_error_msg(status){
     var frm = document.getElementById("facility_appt_form");
     var facility_no=$("#facility_appt_no").val();
     var date=$("#facility_appt_date").val();
     var time=$("#ticket_time").val();
-    data={"facility_no":facility_no,"date":date,"time":time};
+    data={"facility_no":facility_no,"date":date,"time":time,"status":status};
     $.ajax({
         data: data,
         url: '/user/facility_appt/error_msg',
@@ -100,8 +100,14 @@ function facility_appt_error_msg(){
         cache: false,
         timeout: 60,
         success: function (msg) {
-            if(msg.msg=="您已重複預約。" || msg.msg=="十分抱歉，預約人數已達上限，請更改預約時段/設施。"){
-                alert(msg.msg);
+            if(status=="add"){
+                if(msg.msg=="您已重複預約。" || msg.msg=="十分抱歉，預約人數已達上限，請更改預約時段/設施。"){
+                    alert(msg.msg);
+                }
+            }else{
+                if(msg.msg=="十分抱歉，預約人數已達上限，請更改預約時段/設施。"){
+                    alert(msg.msg);
+                }
             }
         },
         error: function (error) {
@@ -125,6 +131,11 @@ function go_edit_ticket(date){
     window.location.href = '/user/order/facility/'+date;
 }
 
+// 目前訂單修改-設施
+function go_edit_facility_appt(no){
+    window.location.href = '/user/order/facility/facility_appt_edit/'+no;
+}
+
 // 目前訂單刪除-門票
 function go_del_ticket(no){
     var ticket_view_form = document.getElementById("ticket_view_form");
@@ -146,7 +157,7 @@ function go_del_ticket(no){
     ticket_view_form.submit();
 }
 
-// 目前訂單刪除-門票
+// 目前訂單刪除-設施
 function go_del_facility(no,date){
     var facility_view_form = document.getElementById("facility_view_form");
     var isClick = true;
@@ -155,7 +166,7 @@ function go_del_facility(no,date){
         //刪除確認
         var result = confirm('您確定要刪除嗎？');
         if (result == true) {
-            facility_view_form.action = '/user/order/facility/facility_del/'+no+'/'+date;
+            facility_view_form.action = '/user/order/facility/facility_appt_del/'+no+'/'+date;
             alert('已刪除');
         } else {
             return false;

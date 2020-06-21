@@ -134,10 +134,14 @@ app.post('/user/facility_appt_save', user.facility_appt_save);
 app.get('/user/order', user.order);
 // 執行訂單刪除-門票
 app.post('/user/order/ticket_del/:no', user.ticket_appt_del);
+// 目前訂單編輯-設施
+app.get('/user/order/facility/facility_appt_edit/:no', user.order_facility_appt_edit);
+// 執行目前訂單編輯-設施
+app.post('/user/order/facility/facility_appt_edit_save', user.order_facility_appt_edit_save);
 // 目前訂單-設施
 app.get('/user/order/facility/:date', user.order_facility);
 // 執行訂單刪除-設施
-app.post('/user/order/facility/facility_del/:no/:date', user.facility_appt_del);
+app.post('/user/order/facility/facility_appt_del/:no/:date', user.facility_appt_del);
 
 // 失敗
 app.get('/failure', routes.failure)

@@ -1,0 +1,45 @@
+<%- include layouts/header.ejs %>
+
+<div id="content">
+    <%- include layouts/side.ejs %>
+    <div id="body">
+        <form method="post" id="facility_appt_form" name="facility_appt_form" action="/user/order/facility/facility_appt_edit_save">
+            <table id="order_facility_appt_edit" cellpadding='5'>
+                <tr>
+                    <td>編號</td>
+                    <td><input type="text" name="facility_appt_no" id="facility_appt_no" value="<%=data[0].No%>" disabled readonly/></td>
+                </tr>
+                <tr>
+                    <td>預約設施</td>
+                    <td><input type="text" name="name" id="name" value="<%=data[0].Name%>" disabled readonly/></td>
+                </tr>
+                <tr>
+                    <td>預約日期</td>
+                    <td><input type="text" name="facility_appt_date" id="facility_appt_date" value="<%=data[0].Time%>" disabled readonly/></td>
+                </tr>
+                <tr>
+                    <td>預約時段</td>
+                    <td>
+                        <input type="hidden" id="ticket_time" name="ticket_time" value="" readonly="readonly">
+                        <input type="radio" name="ticket_time" value="10:00" onclick="click_time('10:00')"> 10:00
+                        <input type="radio" name="ticket_time" value="11:00" onclick="click_time('11:00')"> 11:00
+                        <input type="radio" name="ticket_time" value="12:00" onclick="click_time('12:00')"> 12:00<br>
+                        <input type="radio" name="ticket_time" value="13:00" onclick="click_time('13:00')"> 13:00
+                        <input type="radio" name="ticket_time" value="14:00" onclick="click_time('14:00')"> 14:00
+                        <input type="radio" name="ticket_time" value="15:00" onclick="click_time('15:00')"> 15:00<br>
+                        <input type="radio" name="ticket_time" value="16:00" onclick="click_time('16:00')"> 16:00
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="td_center">
+                        &nbsp; <input type="button" name="cancel" value="✘ 取消" class="cancel" onClick="go_back();">
+                        <input type="button" name="ticketBtn" id="ticketBtn" class="ticket_btn" value="✎ 編輯" onclick="facility_appt_error_msg('edit')">
+                    </td>
+                </tr>
+            </table>
+            <p id="errorMsg" class="errorMsg"></p>
+        </form>
+    </div>
+</div>
+
+<%- include layouts/footer.ejs %>

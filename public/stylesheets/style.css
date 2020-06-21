@@ -174,12 +174,12 @@ table{
     margin: auto;
 } 
 #left{
-    width: 150px;
+    width: 160px;
     float: left;
     vertical-align: center;
 }
 #right{
-    width: 570px;
+    width: 560px;
     float: left;
     display: none;
 }
@@ -193,7 +193,7 @@ table{
 }
 
 /*註冊*/
-#reg_table,#login_table,#ticketBtn_table{
+#reg_table,#login_table,#ticketBtn_table,#order_facility_appt_edit{
     margin:0px auto 0px auto;
 }
 .td_center,.div_center{

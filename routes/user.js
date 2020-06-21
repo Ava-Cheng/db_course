@@ -311,34 +311,54 @@ exports.facility_appt_errorMsg = function (req, res) {
     var facility_no=req.body.facility_no;
     var date=req.body.date;
     var time=req.body.time;
+    var status=req.body.status;
     var user_no=req.cookies.information.no;
     req.getConnection(function (err, connection) {
-        connection.query("SELECT * FROM Facility_Appt WHERE Facility_No = ? AND User_No = ? AND Date = ? AND Time = ?", [facility_no,user_no,date,time], function (err, rows) {
-            if (err) {
-                errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
-            } else{
-                if(rows!=''){
-                    res.send({ msg: "您已重複預約。" });
-                }else{
-                    connection.query("SELECT Available_PER FROM Facility WHERE No = ? ", [facility_no], function (err, rows) {
-                        if (err) {
-                            errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
-                        }else{
-                            var available_PER=JSON.parse(JSON.stringify(rows))[0].Available_PER;
-                            connection.query("SELECT count(Date) as Count FROM Facility_Appt WHERE Facility_No=? ORDER BY Date", [facility_no], function (err, rows) {
-                                if (err) {
-                                    errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
-                                }else{
-                                    if(rows[0].Count==available_PER){
-                                        res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
+        if(status=="add"){
+            connection.query("SELECT * FROM Facility_Appt WHERE Facility_No = ? AND User_No = ? AND Date = ? AND Time = ?", [facility_no,user_no,date,time], function (err, rows) {
+                if (err) {
+                    errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
+                } else{
+                    if(rows!=''){
+                        res.send({ msg: "您已重複預約。" });
+                    }else{
+                        connection.query("SELECT Available_PER FROM Facility WHERE No = ? ", [facility_no], function (err, rows) {
+                            if (err) {
+                                errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
+                            }else{
+                                var available_PER=JSON.parse(JSON.stringify(rows))[0].Available_PER;
+                                connection.query("SELECT count(Date) as Count FROM Facility_Appt WHERE Facility_No=? ORDER BY Date", [facility_no], function (err, rows) {
+                                    if (err) {
+                                        errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
+                                    }else{
+                                        if(rows[0].Count==available_PER){
+                                            res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
+                                        }
                                     }
-                                }
-                            })
+                                })
+                            }
+                        })
+                    }
+                }
+            })
+        }else{
+            connection.query("SELECT Available_PER FROM Facility WHERE No = ? ", [facility_no], function (err, rows) {
+                if (err) {
+                    errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
+                }else{
+                    var available_PER=JSON.parse(JSON.stringify(rows))[0].Available_PER;
+                    connection.query("SELECT count(Date) as Count FROM Facility_Appt WHERE Facility_No=? ORDER BY Date", [facility_no], function (err, rows) {
+                        if (err) {
+                            errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
+                        }else{
+                            if(rows[0].Count==available_PER){
+                                res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
+                            }
                         }
                     })
                 }
-            }
-        })
+            })
+        }
     })
 }
 
@@ -423,7 +443,7 @@ exports.order_facility = function (req, res) {
         var user_no=req.cookies.information.no;
         var date=moment(req.params.date).format('YYYY-MM-DD');
         req.getConnection(function (err, connection) {
-            connection.query('SELECT Facility_Appt.No,Facility_Appt.Facility_No,Facility_Appt.User_No,Facility_Appt.Date,Facility_Appt.Time FROM Facility_Appt Facility_Appt INNER JOIN ( SELECT * FROM Facility_Appt_Check) Facility_Appt_Check ON Facility_Appt.No=Facility_Appt_Check.No ' +
+            connection.query('SELECT Facility_Appt.No,Facility_Appt.Facility_No,Facility_Appt.User_No,Facility_Appt.Date,Facility_Appt.Time,Facility.Name FROM Facility_Appt Facility_Appt INNER JOIN ( SELECT * FROM Facility_Appt_Check) Facility_Appt_Check ON Facility_Appt.No=Facility_Appt_Check.No ' +
                 'INNER JOIN ( SELECT * FROM Facility) Facility ON Facility_Appt.Facility_No=Facility.No ' +
                 'WHERE Facility_Appt_Check.Exist = ? AND Facility_Appt.User_No= ? AND Facility_Appt.Date=? ORDER BY Date,Time,Name DESC',[1,user_no,date], function (err, rows) {
                 // 日期處理
@@ -476,5 +496,46 @@ exports.facility_appt_del= function (req, res) {
                 res.redirect('/user/order/facility/'+date);
             }
         });
+    })
+}
+
+// 訂單編輯-設施
+exports.order_facility_appt_edit= function (req, res) {
+    var no=req.params.no;
+    // 如果已經登入則直接跳轉
+    if (!req.cookies.information || req.cookies.information == undefined) {
+        res.redirect('/user/login');
+    }else{
+        req.getConnection(function (err, connection) {
+            connection.query('SELECT Facility_Appt.No,Facility_Appt.Date,Facility_Appt.Time,Facility.Name FROM Facility_Appt Facility_Appt INNER JOIN ( SELECT * FROM Facility) Facility ON Facility_Appt.Facility_No=Facility.No WHERE Facility_Appt.No = ?',[no], function (err, rows) {
+                res.render('order_facility_appt_edit', {
+                    page_title: "目前訂單編輯-設施",
+                    full_name:req.cookies.information.name,
+                    identity:req.cookies.information.identity,
+                    data:rows
+                });
+            })
+        })
+    }
+}
+
+// 執行訂單編輯-設施
+exports.order_facility_appt_edit_save = function (req, res) {
+    console.log('test');
+    var input = JSON.parse(JSON.stringify(req.body));
+    var no=input.facility_appt_no;
+    req.getConnection(function (err, connection) {
+        var facility_appt_data = {
+            Time:time
+        }
+        console.log(facility_appt_data,no);
+        /*
+        connection.query("UPDATE Facility_Appt set ? WHERE No = ? ", [facility_appt_data , no], function (err, row) {
+            if (err) {
+                errorPrint("Error Updating（routes：/user/order/facility/facility_appt_edit_save）: %s ", err);
+            }
+        });
+        */
+        res.redirect('/user/order/facility/facility_appt_edit/'+no);
     })
 }
