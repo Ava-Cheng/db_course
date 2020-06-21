@@ -122,7 +122,7 @@ function go_add_ticket(){
 }
 
 // 新增訂單-設施
-function go_add_facility(){
+function go_user_order_facility(){
     window.location.href = '/user/facility_appt';
 }
 

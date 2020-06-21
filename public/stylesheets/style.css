@@ -158,7 +158,7 @@ table{
 /*設施資訊*/
 .frame_view {
     height: 360px;
-    width: 670px;
+    width: 600px;
     position: relative;
 }
 #facility_view{
@@ -186,7 +186,7 @@ table{
 #facility_info_table{
     margin: 0px auto 0px auto;
 }
-#info_view,#facility_name{
+#info_view,.facility_name{
     border: none;
     background: none;
     pointer-events: none;

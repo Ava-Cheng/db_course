@@ -13,7 +13,7 @@
                         <input type="hidden" id="images_name" name="images_name" value="<%=data[i].Images_Name%>">
                         <tr>
                             <td width="340px" onclick="data_list('<%=data[i].Name%>','<%=data[i].Info%>','<%=data[i].Images_Name%>')">
-                                🚀<%=data[i].Name%>
+                                🚀 <%=data[i].Name%>
                             </td>
                         </tr>
                     <% } %>
@@ -33,7 +33,7 @@
                 </tr>
                 <tr>
                     <td>
-                        🚀<input type="text" id="facility_name" name="facility_name" value="none" readonly="readonly">
+                        🚀 <input type="text" id="facility_name" class="facility_name" name="facility_name" value="none" readonly="readonly">
                         <textarea cols="95" rows="10" name="info_view" id="info_view" maxlength="1000" readonly="readonly"></textarea>
                     </td>
                 </tr>
