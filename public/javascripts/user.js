@@ -80,7 +80,7 @@ function click_time(ticket_time){
 // 點擊預約設施
 function click_facility_appt(facility_name,facility_no){
     $("#facility_appt_facility_name").val(facility_name);
-    $("#facility_appt_no").val(facility_no);
+    $("#facility_no").val(facility_no);
     // 顯示下一個步驟
     $("#step4").show();
 }
@@ -88,10 +88,15 @@ function click_facility_appt(facility_name,facility_no){
 // 錯誤訊息接收 設施預約
 function facility_appt_error_msg(status){
     var frm = document.getElementById("facility_appt_form");
-    var facility_no=$("#facility_appt_no").val();
     var date=$("#facility_appt_date").val();
     var time=$("#ticket_time").val();
-    data={"facility_no":facility_no,"date":date,"time":time,"status":status};
+    if(status=='add'){
+        var facility_no=$("#facility_no").val();
+        data={"facility_no":facility_no,"date":date,"time":time,"status":status};
+    }else{
+        var facility_appt_no=$("#facility_appt_no").val();
+        data={"facility_appt_no":facility_appt_no,"date":date,"time":time,"status":status};
+    }
     $.ajax({
         data: data,
         url: '/user/facility_appt/error_msg',

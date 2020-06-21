@@ -308,13 +308,13 @@ exports.facility_appt= function (req, res) {
 
 // 判斷預約是否重複或已達預約上限
 exports.facility_appt_errorMsg = function (req, res) {
-    var facility_no=req.body.facility_no;
     var date=req.body.date;
     var time=req.body.time;
     var status=req.body.status;
     var user_no=req.cookies.information.no;
     req.getConnection(function (err, connection) {
         if(status=="add"){
+            var facility_no=req.body.facility_no;
             connection.query("SELECT * FROM Facility_Appt WHERE Facility_No = ? AND User_No = ? AND Date = ? AND Time = ?", [facility_no,user_no,date,time], function (err, rows) {
                 if (err) {
                     errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
@@ -342,18 +342,27 @@ exports.facility_appt_errorMsg = function (req, res) {
                 }
             })
         }else{
-            connection.query("SELECT Available_PER FROM Facility WHERE No = ? ", [facility_no], function (err, rows) {
+            var facility_appt_no=req.body.facility_appt_no;
+            // 利用預約編號查詢設施編號
+            connection.query("SELECT Facility_No FROM Facility_Appt WHERE No = ? ", [facility_appt_no], function (err, rows) {
                 if (err) {
                     errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
                 }else{
-                    var available_PER=JSON.parse(JSON.stringify(rows))[0].Available_PER;
-                    connection.query("SELECT count(Date) as Count FROM Facility_Appt WHERE Facility_No=? ORDER BY Date", [facility_no], function (err, rows) {
+                    var facility_no=rows[0].Facility_No;
+                    connection.query("SELECT Available_PER FROM Facility WHERE No = ? ", [facility_no], function (err, rows) {
                         if (err) {
-                            errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
+                            errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
                         }else{
-                            if(rows[0].Count==available_PER){
-                                res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
-                            }
+                            var available_PER=rows[0].Available_PER;
+                            connection.query("SELECT count(Date) as Count FROM Facility_Appt WHERE Facility_No=? ORDER BY Date", [facility_no], function (err, rows) {
+                                if (err) {
+                                    errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
+                                }else{
+                                    if(rows[0].Count==available_PER){
+                                        res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
+                                    }
+                                }
+                            })
                         }
                     })
                 }
@@ -365,7 +374,7 @@ exports.facility_appt_errorMsg = function (req, res) {
 // 執行設施預約
 exports.facility_appt_save = function (req, res) {
     var input = JSON.parse(JSON.stringify(req.body));
-    var facility_no=input.facility_appt_no;
+    var facility_no=input.facility_no;
     var date=input.facility_appt_date;
     var time=input.ticket_time;
     var user_no=req.cookies.information.no;
@@ -522,21 +531,19 @@ exports.order_facility_appt_edit= function (req, res) {
 
 // 執行訂單編輯-設施
 exports.order_facility_appt_edit_save = function (req, res) {
-    console.log('test');
     var input = JSON.parse(JSON.stringify(req.body));
     var no=input.facility_appt_no;
+    var time=input.ticket_time[0];
+    var date=input.facility_appt_date;
     req.getConnection(function (err, connection) {
         var facility_appt_data = {
             Time:time
         }
-        console.log(facility_appt_data,no);
-        /*
         connection.query("UPDATE Facility_Appt set ? WHERE No = ? ", [facility_appt_data , no], function (err, row) {
             if (err) {
                 errorPrint("Error Updating（routes：/user/order/facility/facility_appt_edit_save）: %s ", err);
             }
         });
-        */
-        res.redirect('/user/order/facility/facility_appt_edit/'+no);
+        res.redirect('/user/order/facility/'+date);
     })
 }
