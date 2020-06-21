@@ -512,7 +512,8 @@ exports.order_facility_appt_edit= function (req, res) {
                     page_title: "目前訂單編輯-設施",
                     full_name:req.cookies.information.name,
                     identity:req.cookies.information.identity,
-                    data:rows
+                    data:rows,
+                    date:moment((JSON.parse(JSON.stringify(rows))[0].Date).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD')
                 });
             })
         })
