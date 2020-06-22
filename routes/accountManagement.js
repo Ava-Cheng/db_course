@@ -160,7 +160,6 @@ exports.errorMsg = function (req, res) {
     var no = req.body.no;
     var status = req.body.status;
     var identity=req.body.identity;
-    console.log(email,no,status,identity);
     req.getConnection(function (err, connection) {
         if(identity=='user'){
             if(status=="reg"){

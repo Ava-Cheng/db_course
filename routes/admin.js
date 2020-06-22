@@ -78,7 +78,6 @@ exports.errorMsg = function (req, res) {
     var md5 = crypto.createHash('md5');
     var email = String(req.body.email);
     var inputPassword = req.body.password;
-    console.log(email,inputPassword);
     inputPassword = md5.update(inputPassword).digest('hex');
     req.getConnection(function (err, connection) {
         // 依據email撈出管理員帳號相對應資料
@@ -432,7 +431,6 @@ exports.facility_errorMsg = function (req, res) {
     var name = req.body.facility_name;
     var status = req.body.status;
     var no = req.body.no;
-    console.log(name,no,status);
     req.getConnection(function (err, connection) {
         if(status=="add"){
             //依據Name判斷是否有重複新增設施

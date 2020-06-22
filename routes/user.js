@@ -69,7 +69,6 @@ exports.errorMsg = function (req, res) {
     var md5 = crypto.createHash('md5');
     var email = String(req.body.email);
     var inputPassword = req.body.password;
-    console.log(email,inputPassword);
     inputPassword = md5.update(inputPassword).digest('hex');
     req.getConnection(function (err, connection) {
         // 依據email撈出管理員帳號相對應資料
@@ -314,7 +313,6 @@ exports.facility_appt_errorMsg = function (req, res) {
     var time=req.body.time;
     var status=req.body.status;
     var user_no=req.cookies.information.no;
-    console.log(date,time,status,user_no);
     req.getConnection(function (err, connection) {
         if(status=="add"){
             var facility_no=req.body.facility_no;
