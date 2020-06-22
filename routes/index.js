@@ -1,5 +1,5 @@
 // ERROR顯示以及跳轉
-function errorPrint(text, error) {
+function errorPrint(text, error,res) {
     console.log(text, error);
     res.redirect('/');
 }
@@ -66,7 +66,7 @@ exports.facility_information= function(req, res) {
         connection.query('SELECT * FROM Facility Facility INNER JOIN ( SELECT * FROM Facility_Check) Facility_Check ON Facility.No=Facility_Check.No ' +
             'WHERE Facility_Check.Exist = ?', [1], function (err, rows) {
                 if (err) {
-                    errorPrint("Error Selecting（routes：/admin/facility_management): %s ", err);
+                    errorPrint("Error Selecting（routes：/admin/facility_management): %s ", err,res);
                 } else{
                     res.render('facility_information', {
                         page_title: "設施資訊",

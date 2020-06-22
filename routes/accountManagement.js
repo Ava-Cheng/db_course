@@ -1,7 +1,7 @@
 var crypto = require('crypto');
 
 //ERROR顯示以及跳轉
-function errorPrint(text, error) {
+function errorPrint(text, error,res) {
     console.log(text, error);
     res.redirect('/');
 }
@@ -37,12 +37,13 @@ exports.ser_reg_save = function (req, res) {
         // 撈出最後一筆編號
         connection.query("SELECT No FROM `User` ORDER BY No DESC LIMIT 0 , 1", function (err, rows) {
             if (err) {
-                errorPrint("Error Selecting（routes：/user_save_reg）: %s ", err);
+                errorPrint("Error Selecting（routes：/user_save_reg）: %s ", err,res);
             }else{
-                var no = Number(rows[0].No)+1;
                 // 第一次新增會撈不到
                 if (String(rows[0])=="undefined"){
-                    no=1
+                    var no=1
+                }else{
+                    var no = Number(rows[0].No)+1;
                 }
                 var user_data = {
                     Email: email,
@@ -60,17 +61,17 @@ exports.ser_reg_save = function (req, res) {
                 };
                 connection.query("INSERT INTO User set ? ", user_data, function (err, rows) {
                     if (err) {
-                        errorPrint("Error inserting（routes：/user_reg): %s ", err);
+                        errorPrint("Error inserting（routes：/user_reg): %s ", err,res);
                     }
                 });
                 connection.query("INSERT INTO User_Name set ? ", user_name_data, function (err, rows) {
                     if (err) {
-                        errorPrint("Error inserting（routes：/user_reg): %s ", err);
+                        errorPrint("Error inserting（routes：/user_reg): %s ", err,res);
                     } 
                 });
                 connection.query("INSERT INTO User_Member set ? ", user_member_data, function (err, rows) {
                     if (err) {
-                        errorPrint("Error inserting（routes：/user_reg): %s ", err);
+                        errorPrint("Error inserting（routes：/user_reg): %s ", err,res);
                     } 
                 });
                 res.redirect('/user/login');
@@ -110,7 +111,7 @@ exports.admin_save_reg = function (req, res) {
         // 撈出最後一筆編號
         connection.query("SELECT No FROM `Admin` ORDER BY No DESC LIMIT 0 , 1", function (err, rows) {
             if (err) {
-                errorPrint("Error Selecting（routes：/reg/admin_save）: %s ", err);
+                errorPrint("Error Selecting（routes：/reg/admin_save）: %s ", err,res);
             }else{
                 // 第一次新增會撈不到
                 if (String(rows[0])=="undefined"){
@@ -134,17 +135,17 @@ exports.admin_save_reg = function (req, res) {
                 };
                 connection.query("INSERT INTO Admin set ? ", admin_data, function (err, rows) {
                     if (err) {
-                        errorPrint("Error inserting（routes：/reg/admin): %s ", err);
+                        errorPrint("Error inserting（routes：/reg/admin): %s ", err,res);
                     }
                 });
                 connection.query("INSERT INTO Admin_Name set ? ", admin_name_data, function (err, rows) {
                     if (err) {
-                        errorPrint("Error inserting（routes：/reg/admin): %s ", err);
+                        errorPrint("Error inserting（routes：/reg/admin): %s ", err,res);
                     } 
                 });
                 connection.query("INSERT INTO Admin_Member set ? ", admin_member_data, function (err, rows) {
                     if (err) {
-                        errorPrint("Error inserting（routes：/reg/admin): %s ", err);
+                        errorPrint("Error inserting（routes：/reg/admin): %s ", err,res);
                     } 
                 });
                 res.redirect('/admin/login');
@@ -163,7 +164,7 @@ exports.errorMsg = function (req, res) {
             //依據email撈出User用來檢查是否有重複註冊
             connection.query("SELECT * FROM User WHERE email =?", [email], function (err, rows) {
                 if (err) {
-                    errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err);
+                    errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err,res);
                 } 
                 if (rows[0] != undefined) {
                     res.send({ msg: "此帳號已存在，請直接登入。" });
@@ -173,7 +174,7 @@ exports.errorMsg = function (req, res) {
             //依據email撈出User用來檢查是否有重複註冊
             connection.query("SELECT * FROM User WHERE email =? AND No!=?", [email,no], function (err, rows) {
                 if (err) {
-                    errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err);
+                    errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err,res);
                 } 
                 if (rows[0] != undefined) {
                     res.send({ msg: "此帳號已存在，請直接登入。" });

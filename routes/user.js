@@ -8,7 +8,7 @@ function setCookie_user(res,name,user_no) {
 }
 
 // ERROR顯示以及跳轉
-function errorPrint(text, error) {
+function errorPrint(text, error,res) {
     console.log(text, error);
     res.redirect('/');
 }
@@ -38,7 +38,7 @@ exports.user_do_login = function (req, res) {
         // 依據email撈出管理員帳號相對應資料
         connection.query("SELECT * FROM User WHERE Email =?", [inputEmail], function (err, rows) {
             if (err) {
-                errorPrint("Error Selecting（routes：/user/user_do_login): %s ", err);
+                errorPrint("Error Selecting（routes：/user/user_do_login): %s ", err,res);
             } else if (rows == "") {
                 // 查無使用者，跳回登入頁面
                 res.redirect('/user/login');
@@ -52,7 +52,7 @@ exports.user_do_login = function (req, res) {
                     // 依據email撈出管理員姓名相對應資料
                     connection.query("SELECT * FROM User_Name WHERE User_No =?", [user_no], function (err, rows) {
                         if (err) {
-                            errorPrint("Error Selecting（routes：/user/user_do_login): %s ", err);
+                            errorPrint("Error Selecting（routes：/user/user_do_login): %s ", err,res);
                         } 
                         var name=rows[0].Name;
                         setCookie_user(res,name,user_no);
@@ -74,7 +74,7 @@ exports.errorMsg = function (req, res) {
         // 依據email撈出管理員帳號相對應資料
         connection.query("SELECT * FROM User WHERE Email = ?", [email], function (err, rows) {
             if (err) {
-                errorPrint("Error Selecting（routes：/user/error_msg）: %s ", err);
+                errorPrint("Error Selecting（routes：/user/error_msg）: %s ", err,res);
             } else{
                 if(inputPassword==undefined){
                     if (rows[0] != undefined) {
@@ -119,7 +119,7 @@ exports.user_account_view = function (req, res) {
                     // 生日格式轉換為YYYY/MM/DD才可以帶入input date
                     var Birth = moment((JSON.parse(JSON.stringify(rows))[0].Birth).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD');
                     if (err) {
-                        errorPrint("Error Selecting (routes：/user/account_view）: %s ", err);
+                        errorPrint("Error Selecting (routes：/user/account_view）: %s ", err,res);
                     } else {
                         res.render('user_account_view', {
                             page_title: "帳號管理",
@@ -163,17 +163,17 @@ exports.user_account_view_save = function (req, res) {
     req.getConnection(function (err, connection) {
         connection.query("UPDATE User set ? WHERE No = ? ", [user_data , no], function (err, row) {
             if (err) {
-                errorPrint("Error Updating（routes：/user/account_view_save）: %s ", err);
+                errorPrint("Error Updating（routes：/user/account_view_save）: %s ", err,res);
             }
         });
         connection.query("UPDATE User_Member set ? WHERE User_No = ? ", [user_member_data , no], function (err, row) {
             if (err) {
-                errorPrint("Error Updating（routes：/user/account_view_save）: %s ", err);
+                errorPrint("Error Updating（routes：/user/account_view_save）: %s ", err,res);
             }
         });
         connection.query("UPDATE User_Name set ? WHERE User_No = ? ", [user_name_data , no], function (err, row) {
             if (err) {
-                errorPrint("Error Updating（routes：/user/account_view_save）: %s ", err);
+                errorPrint("Error Updating（routes：/user/account_view_save）: %s ", err,res);
             }
         });
         res.redirect('/user/order');
@@ -212,7 +212,7 @@ exports.ticket_num_check = function (req, res) {
         // 計算每個日期加總
         connection.query("SELECT Date,count(Date) as Count FROM Ticket WHERE User_No=? GROUP BY Date",[user_no], function (err, rows) {
             if (err) {
-                errorPrint("Error Selecting（routes：/user/ticket_save）: %s ", err);
+                errorPrint("Error Selecting（routes：/user/ticket_save）: %s ", err,res);
             }else{
                 var arrary_date=[];
                 var arrary_count=[];
@@ -244,7 +244,7 @@ exports.ticket_save = function (req, res) {
         // 撈出最後一筆編號
         connection.query("SELECT No FROM `Ticket` ORDER BY No DESC LIMIT 0 , 1", function (err, rows) {
             if (err) {
-                errorPrint("Error Selecting（routes：/user/ticket_save）: %s ", err);
+                errorPrint("Error Selecting（routes：/user/ticket_save）: %s ", err,res);
             }else{
                 // 第一次新增會撈不到
                 if (String(rows[0])=="undefined"){
@@ -262,12 +262,12 @@ exports.ticket_save = function (req, res) {
                 }
                 connection.query("INSERT INTO Ticket set ?", [ticket_data], function (err, row) {
                     if (err) {
-                        errorPrint("Error Updating（routes：/user/ticket_save）: %s ", err);
+                        errorPrint("Error Updating（routes：/user/ticket_save）: %s ", err,res);
                     }
                 });
                 connection.query("INSERT INTO Ticket_Check set ?  ", [ticket_check_data], function (err, row) {
                     if (err) {
-                        errorPrint("Error Updating（routes：/user/ticket_save）: %s ", err);
+                        errorPrint("Error Updating（routes：/user/ticket_save）: %s ", err,res);
                     }
                 });
                 res.redirect('/user/facility_appt');
@@ -317,19 +317,19 @@ exports.facility_appt_errorMsg = function (req, res) {
             var facility_no=req.body.facility_no;
             connection.query("SELECT * FROM Facility_Appt WHERE Facility_No = ? AND User_No = ? AND Date = ? AND Time = ?", [facility_no,user_no,date,time], function (err, rows) {
                 if (err) {
-                    errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
+                    errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err,res);
                 } else{
                     if(rows!=''){
                         res.send({ msg: "您已重複預約。" });
                     }else{
                         connection.query("SELECT Available_PER FROM Facility WHERE No = ? ", [facility_no], function (err, rows) {
                             if (err) {
-                                errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
+                                errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err,res);
                             }else{
                                 var available_PER=JSON.parse(JSON.stringify(rows))[0].Available_PER;
                                 connection.query("SELECT count(Date) as Count FROM Facility_Appt WHERE Facility_No=? ORDER BY Date", [facility_no], function (err, rows) {
                                     if (err) {
-                                        errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
+                                        errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err,res);
                                     }else{
                                         if(rows[0].Count==available_PER){
                                             res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
@@ -346,17 +346,17 @@ exports.facility_appt_errorMsg = function (req, res) {
             // 利用預約編號查詢設施編號
             connection.query("SELECT Facility_No FROM Facility_Appt WHERE No = ? ", [facility_appt_no], function (err, rows) {
                 if (err) {
-                    errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
+                    errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err,res);
                 }else{
                     var facility_no=rows[0].Facility_No;
                     connection.query("SELECT Available_PER FROM Facility WHERE No = ? ", [facility_no], function (err, rows) {
                         if (err) {
-                            errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err);
+                            errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err,res);
                         }else{
                             var available_PER=rows[0].Available_PER;
                             connection.query("SELECT count(Date) as Count FROM Facility_Appt WHERE Facility_No=? ORDER BY Date", [facility_no], function (err, rows) {
                                 if (err) {
-                                    errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
+                                    errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err,res);
                                 }else{
                                     if(rows[0].Count==available_PER){
                                         res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
@@ -382,7 +382,7 @@ exports.facility_appt_save = function (req, res) {
         // 撈出最後一筆編號
         connection.query("SELECT No FROM `Facility_Appt` ORDER BY No DESC LIMIT 0 , 1", function (err, rows) {
             if (err) {
-                errorPrint("Error Selecting（routes：/user/facility_appt_save）: %s ", err);
+                errorPrint("Error Selecting（routes：/user/facility_appt_save）: %s ", err,res);
             }else{
                 // 第一次新增會撈不到
                 if (String(rows[0])=="undefined"){
@@ -402,12 +402,12 @@ exports.facility_appt_save = function (req, res) {
                 }
                 connection.query("INSERT INTO Facility_Appt set ?", [facility_appt_data], function (err, row) {
                     if (err) {
-                        errorPrint("Error Updating（routes：/user/facility_appt_save）: %s ", err);
+                        errorPrint("Error Updating（routes：/user/facility_appt_save）: %s ", err,res);
                     }
                 });
                 connection.query("INSERT INTO Facility_Appt_Check set ?  ", [facility_appt_check_data], function (err, row) {
                     if (err) {
-                        errorPrint("Error Updating（routes：/user/facility_appt_save）: %s ", err);
+                        errorPrint("Error Updating（routes：/user/facility_appt_save）: %s ", err,res);
                     }
                 });
                 res.redirect('/user/order');
@@ -482,7 +482,7 @@ exports.ticket_appt_del= function (req, res) {
     req.getConnection(function (err, connection) {
         connection.query("UPDATE Ticket_Check SET ? WHERE No = ? ", [ticket_check_data,no], function (err, row) {
             if (err) {
-                errorPrint("Error Updating（routes：/user/order/ticket_del/:no）: %s ", err);
+                errorPrint("Error Updating（routes：/user/order/ticket_del/:no）: %s ", err,res);
             }else{
                 res.redirect('/user/order');
             }
@@ -500,7 +500,7 @@ exports.facility_appt_del= function (req, res) {
     req.getConnection(function (err, connection) {
         connection.query("UPDATE Facility_Appt_Check SET ? WHERE No = ? ", [facility_appt_check_data,no], function (err, row) {
             if (err) {
-                errorPrint("Error Updating（routes：/user/order/facility/facility_del/:no）: %s ", err);
+                errorPrint("Error Updating（routes：/user/order/facility/facility_del/:no）: %s ", err,res);
             }else{
                 res.redirect('/user/order/facility/'+date);
             }
@@ -541,7 +541,7 @@ exports.order_facility_appt_edit_save = function (req, res) {
         }
         connection.query("UPDATE Facility_Appt set ? WHERE No = ? ", [facility_appt_data , no], function (err, row) {
             if (err) {
-                errorPrint("Error Updating（routes：/user/order/facility/facility_appt_edit_save）: %s ", err);
+                errorPrint("Error Updating（routes：/user/order/facility/facility_appt_edit_save）: %s ", err,res);
             }
         });
         res.redirect('/user/order/facility/'+date);

@@ -9,7 +9,7 @@ function setCookie_admin(res,name,admin_no) {
 }
 
 // ERROR顯示以及跳轉
-function errorPrint(text, error) {
+function errorPrint(text, error,res) {
     console.log(text, error);
     res.redirect('/');
 }
@@ -40,7 +40,7 @@ exports.admin_do_login = function (req, res) {
         // 依據email撈出管理員帳號相對應資料
         connection.query("SELECT * FROM Admin WHERE Email =?", [inputEmail], function (err, rows) {
             if (err) {
-                errorPrint("Error Selecting（routes：/admin/admin_do_login): %s ", err);
+                errorPrint("Error Selecting（routes：/admin/admin_do_login): %s ", err,res);
             } else if (rows == "") {
                 // 查無使用者，跳回登入頁面
                 res.redirect('/admin/login');
@@ -54,7 +54,7 @@ exports.admin_do_login = function (req, res) {
                     // 依據email撈出管理員姓名相對應資料
                     connection.query("SELECT * FROM Admin_Name WHERE Admin_No =?", [admin_no], function (err, rows) {
                         if (err) {
-                            errorPrint("Error Selecting（routes：/admin/admin_do_login): %s ", err);
+                            errorPrint("Error Selecting（routes：/admin/admin_do_login): %s ", err,res);
                         } 
                         var name=rows[0].Name;
                         setCookie_admin(res,name,admin_no);
@@ -121,7 +121,7 @@ exports.admin_account_view = function (req, res) {
                     // 生日格式轉換為YYYY/MM/DD才可以帶入input date
                     var Birth = moment((JSON.parse(JSON.stringify(rows))[0].Birth).slice(0, -14)).add(1, 'days').format('YYYY-MM-DD');
                     if (err) {
-                        errorPrint("Error Selecting (routes：/admin/account_view）: %s ", err);
+                        errorPrint("Error Selecting (routes：/admin/account_view）: %s ", err,res);
                     } else {
                         res.render('admin_account_view', {
                             page_title: "帳號管理",
@@ -165,7 +165,7 @@ exports.admin_account_view_save = function (req, res) {
     req.getConnection(function (err, connection) {
         connection.query("UPDATE Admin set ? WHERE No = ? ", [admin_data , no], function (err, row) {
             if (err) {
-                errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err);
+                errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err,res);
             }
         });
         connection.query("UPDATE Admin_Member set ? WHERE Admin_No = ? ", [admin_member_data , no], function (err, row) {
@@ -175,7 +175,7 @@ exports.admin_account_view_save = function (req, res) {
         });
         connection.query("UPDATE Admin_Name set ? WHERE Admin_No = ? ", [admin_name_data , no], function (err, row) {
             if (err) {
-                errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err);
+                errorPrint("Error Updating（routes：/admin/account_view_save）: %s ", err,res);
             }
         });
         res.redirect('/admin/member_tickets');
@@ -192,7 +192,7 @@ exports.member_tickets = function (req, res) {
             // 計算每個日期加總
             connection.query("SELECT Date,count(Date) as Count FROM Ticket INNER JOIN ( SELECT * FROM Ticket_Check) Ticket_Check ON Ticket_Check.No=Ticket.No WHERE Ticket_Check.Exist=? GROUP BY Date ORDER BY Date DESC",[1], function (err, rows) {
                 if (err) {
-                    errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err);
+                    errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err,res);
                 }else{
                     var arrary_date=[];
                     var arrary_count=[];
@@ -225,7 +225,7 @@ exports.member_data = function (req, res) {
             connection.query('SELECT * FROM User User INNER JOIN ( SELECT * FROM User_Name) User_Name ON User.No = User_Name.User_No ' +
                 'INNER JOIN ( SELECT * FROM User_Member) User_Member ON User.No = User_Member.User_No ', function (err, rows) {
                     if (err) {
-                        errorPrint("Error Selecting（routes：/admin/member_data): %s ", err);
+                        errorPrint("Error Selecting（routes：/admin/member_data): %s ", err,res);
                     } else{
                         res.render('member_data', {
                             page_title: "會員資料查看",
@@ -250,7 +250,7 @@ exports.facility_management = function (req, res) {
             connection.query('SELECT * FROM Facility Facility INNER JOIN ( SELECT * FROM Facility_Check) Facility_Check ON Facility.No=Facility_Check.No ' +
                 'WHERE Facility_Check.Exist = ?', [1], function (err, rows) {
                     if (err) {
-                        errorPrint("Error Selecting（routes：/admin/facility_management): %s ", err);
+                        errorPrint("Error Selecting（routes：/admin/facility_management): %s ", err,res);
                     } else{
                         res.render('facility_management', {
                             page_title: "設施管理",
@@ -315,7 +315,7 @@ exports.facility_add_save = function (req, res) {
         // 撈出最後一筆編號
         connection.query("SELECT No FROM `Facility` ORDER BY No DESC LIMIT 0 , 1", function (err, rows) {
             if (err) {
-                errorPrint("Error Selecting（routes：/admin/facility_management/add_save）: %s ", err);
+                errorPrint("Error Selecting（routes：/admin/facility_management/add_save）: %s ", err,res);
             }else{
                 // 第一次新增會撈不到
                 if (String(rows[0])=="undefined"){
@@ -335,12 +335,12 @@ exports.facility_add_save = function (req, res) {
                 }
                 connection.query("INSERT INTO Facility set ? ", facility_data, function (err, rows) {
                     if (err) {
-                        errorPrint("Error inserting（routes：/admin/facility_management/add_save): %s ", err);
+                        errorPrint("Error inserting（routes：/admin/facility_management/add_save): %s ", err,res);
                     }
                 });
                 connection.query("INSERT INTO Facility_Check set ? ", facility_check_data, function (err, rows) {
                     if (err) {
-                        errorPrint("Error inserting（routes：/admin/facility_management/add_save): %s ", err);
+                        errorPrint("Error inserting（routes：/admin/facility_management/add_save): %s ", err,res);
                     }
                 });
                 res.redirect('/admin/facility_management');
@@ -362,7 +362,7 @@ exports.facility_management_edit= function (req, res) {
             connection.query('SELECT * FROM Facility INNER JOIN Facility_Check ON Facility.No=Facility_Check.No ' +
                 'WHERE Facility.No = ?', [no], function (err, rows) {
                     if (err) {
-                        errorPrint("Error Selecting（routes：/admin/facility_management): %s ", err);
+                        errorPrint("Error Selecting（routes：/admin/facility_management): %s ", err,res);
                     } else{
                         res.render('facility_edit', {
                             page_title: "設施編輯",
@@ -400,7 +400,7 @@ exports.facility_management_edit_save= function (req, res) {
     req.getConnection(function (err, connection) {
         connection.query("UPDATE Facility SET ? WHERE No = ? ", [facility_data,no], function (err, row) {
             if (err) {
-                errorPrint("Error Updating（routes：/admin/facility_management/edit_save）: %s ", err);
+                errorPrint("Error Updating（routes：/admin/facility_management/edit_save）: %s ", err,res);
             }else{
                 res.redirect('/admin/facility_management');
             }
@@ -417,7 +417,7 @@ exports.facility_management_delete_save= function (req, res) {
     req.getConnection(function (err, connection) {
         connection.query("UPDATE Facility_Check SET ? WHERE No = ? ", [facility_check_data,no], function (err, row) {
             if (err) {
-                errorPrint("Error Updating（routes：/admin/facility_management/del/:no）: %s ", err);
+                errorPrint("Error Updating（routes：/admin/facility_management/del/:no）: %s ", err,res);
             }else{
                 res.redirect('/admin/facility_management');
             }
@@ -433,9 +433,9 @@ exports.facility_errorMsg = function (req, res) {
     req.getConnection(function (err, connection) {
         if(status=="add"){
             //依據Name判斷是否有重複新增設施
-            connection.query("SELECT * FROM Facility WHERE Name =?", [name], function (err, rows) {
+            connection.query("SELECT * FROM Facility INNER JOIN Facility_Check ON Facility.No = Facility_Check.No WHERE Name = ? AND Exist=?", [name,1], function (err, rows) {
                 if (err) {
-                    errorPrint("Error Selecting（routes：admin/facility_management/error_msg）: %s ", err);
+                    errorPrint("Error Selecting（routes：admin/facility_management/error_msg）: %s ", err,res);
                 } 
                 if (rows[0] != undefined) {
                     res.send({ msg: "此設施已存在。" });
@@ -445,7 +445,7 @@ exports.facility_errorMsg = function (req, res) {
             //依據Name判斷是否有重複新增設施，排除自己
             connection.query("SELECT * FROM Facility WHERE Name =? AND No!=?", [name,no], function (err, rows) {
                 if (err) {
-                    errorPrint("Error Selecting（routes：admin/facility_management/error_msg）: %s ", err);
+                    errorPrint("Error Selecting（routes：admin/facility_management/error_msg）: %s ", err,res);
                 } 
                 if (rows[0] != undefined) {
                     res.send({ msg: "此設施已存在。" });
