@@ -3,3 +3,5 @@ db.ini
 # nodejs套件包
 node_modules
 package-lock.json
+# 設施圖片不要上傳
+./public/images/facility/*
