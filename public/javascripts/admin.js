@@ -11,15 +11,17 @@ function admin_error_msg(frm,data){
         cache: false,
         timeout: 60,
         success: function (msg) {
-            if(msg.msg=="此帳號已存在，請直接登入。" || msg.msg=="此帳號不存在，請前往註冊。" || msg.msg=="密碼輸入錯誤，請再次確認。"){
+            if(msg.msg=="OK"){
+                $("#errorMsg").html("");
+                frm.submit();
+            }else if(msg.msg=="此帳號已存在，請直接登入。" || msg.msg=="此帳號不存在，請前往註冊。" || msg.msg=="密碼輸入錯誤，請再次確認。"){
                 alert(msg.msg);
             }else{
                 $("#errorMsg").html(msg.msg);
             }  
         },
         error: function (error) {
-            $("#errorMsg").html("");
-            frm.submit();
+            console.log(error);
         }
     })
 }
@@ -34,15 +36,17 @@ function facility_error_msg(frm,data){
         cache: false,
         timeout: 60,
         success: function (msg) {
-            if(msg.msg=="此設施已存在。"){
+            if(msg.msg=="OK"){
+                $("#errorMsg").html("");
+                frm.submit();
+            }else if(msg.msg=="此設施已存在。"){
                 alert(msg.msg);
             }else{
                 $("#errorMsg").html(msg.msg);
-            }  
+            } 
         },
         error: function (error) {
-            $("#errorMsg").html("");
-            frm.submit();
+            console.log(error);
         }
     })
 }
@@ -95,8 +99,7 @@ function upload(input) {
             reader.readAsDataURL(input.files[0]);
             // 取得設施圖片
             var frm = document.getElementById("facility_add_upload_images");
-            data={"facility_name":"error"};
-            facility_error_msg(frm,data);
+            frm.submit();
             document.getElementById("facility_table").style.margin="0px 100px 0px 343px";
             
         }

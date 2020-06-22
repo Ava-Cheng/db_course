@@ -78,6 +78,7 @@ exports.errorMsg = function (req, res) {
     var md5 = crypto.createHash('md5');
     var email = String(req.body.email);
     var inputPassword = req.body.password;
+    console.log(email,inputPassword);
     inputPassword = md5.update(inputPassword).digest('hex');
     req.getConnection(function (err, connection) {
         // 依據email撈出管理員帳號相對應資料
@@ -87,20 +88,21 @@ exports.errorMsg = function (req, res) {
             } else{
                 if(inputPassword==undefined){
                     if (rows[0] != undefined) {
-                        res.send({ msg: "此帳號已存在，請直接登入。" });
+                        return res.send({ msg: "此帳號已存在，請直接登入。" });
                     }
                 }else{
                     if (rows == "") {
                         //查無使用者
-                        res.send({ msg: "此帳號不存在，請前往註冊。" });
+                        return res.send({ msg: "此帳號不存在，請前往註冊。" });
                     } else {
                         var password = rows[0].Password;
                         if (password != inputPassword) {
                             //密碼輸入錯誤
-                            res.send({ msg: "密碼輸入錯誤，請再次確認。" });
+                            return res.send({ msg: "密碼輸入錯誤，請再次確認。" });
                         } 
                     }
                 }
+                return res.send({ msg: "OK" });
             }
         })
     })
@@ -430,6 +432,7 @@ exports.facility_errorMsg = function (req, res) {
     var name = req.body.facility_name;
     var status = req.body.status;
     var no = req.body.no;
+    console.log(name,no,status);
     req.getConnection(function (err, connection) {
         if(status=="add"){
             //依據Name判斷是否有重複新增設施
@@ -438,7 +441,7 @@ exports.facility_errorMsg = function (req, res) {
                     errorPrint("Error Selecting（routes：admin/facility_management/error_msg）: %s ", err,res);
                 } 
                 if (rows[0] != undefined) {
-                    res.send({ msg: "此設施已存在。" });
+                    return res.send({ msg: "此設施已存在。" });
                 }
             })
         }else{
@@ -448,9 +451,10 @@ exports.facility_errorMsg = function (req, res) {
                     errorPrint("Error Selecting（routes：admin/facility_management/error_msg）: %s ", err,res);
                 } 
                 if (rows[0] != undefined) {
-                    res.send({ msg: "此設施已存在。" });
+                    return res.send({ msg: "此設施已存在。" });
                 }
             })
         }
+        return res.send({ msg: "OK" });
     })
 }

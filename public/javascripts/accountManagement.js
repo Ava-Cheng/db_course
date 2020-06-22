@@ -12,17 +12,21 @@ function reg_error_msg(frm,data){
         cache: false,
         timeout: 60,
         success: function (msg) {
-            $("#errorMsg").html(msg.msg);
+            if(msg.msg=="OK"){
+                $("#errorMsg").html("");
+                frm.submit();
+            }else{
+                $("#errorMsg").html(msg.msg);
+            }
         },
         error: function (error) {
-            $("#errorMsg").html("");
-            frm.submit();
+            console.log(error);
         }
     })
 }
 
 // 註冊Emial、密碼、姓名、電話格式及長度檢查
-function ckform_reg(status) {
+function ckform_reg(status,identity) {
     var frm = document.getElementById("regForm");
     var email = frm.email.value;
     var password = frm.password.value;
@@ -37,7 +41,7 @@ function ckform_reg(status) {
     }
     if (((frm.exist.value =="exist")||(frm.exist.value !="exist" && password != "")) && ckName.test(name) && name.length <= 40 && birth!="" && ckPhone.test(phone) && phone.length <= 15 && ckEmail.test(email) && email.length <= 150  && password == password_repeat){
         // 錯誤訊息接收
-        data={"no":no,"email":email,"password":password,"password_repeat":password_repeat,"name":name,"phone":phone,"birth":birth,"status":status};
+        data={"no":no,"email":email,"password":password,"password_repeat":password_repeat,"name":name,"phone":phone,"birth":birth,"status":status,"identity":identity};
         reg_error_msg(frm,data);
     }else if (!ckName.test(name)) {
         alert("您所輸入的'姓名'格式錯誤，請再次檢查。");

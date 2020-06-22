@@ -69,6 +69,7 @@ exports.errorMsg = function (req, res) {
     var md5 = crypto.createHash('md5');
     var email = String(req.body.email);
     var inputPassword = req.body.password;
+    console.log(email,inputPassword);
     inputPassword = md5.update(inputPassword).digest('hex');
     req.getConnection(function (err, connection) {
         // 依據email撈出管理員帳號相對應資料
@@ -78,20 +79,21 @@ exports.errorMsg = function (req, res) {
             } else{
                 if(inputPassword==undefined){
                     if (rows[0] != undefined) {
-                        res.send({ msg: "此帳號已存在，請直接登入。" });
+                        return res.send({ msg: "此帳號已存在，請直接登入。" });
                     }
                 }else{
                     if (rows == "") {
                         //查無使用者
-                        res.send({ msg: "此帳號不存在，請前往註冊。" });
+                        return res.send({ msg: "此帳號不存在，請前往註冊。" });
                     } else {
                         var password = rows[0].Password;
                         if (password != inputPassword) {
                             //密碼輸入錯誤
-                            res.send({ msg: "密碼輸入錯誤，請再次確認。" });
+                            return res.send({ msg: "密碼輸入錯誤，請再次確認。" });
                         } 
                     }
                 }
+                return res.send({ msg: "OK" });
             }
         })
     })
@@ -224,13 +226,13 @@ exports.ticket_num_check = function (req, res) {
                 for(var i=0;i<arrary_num;i++){
                     connection.query('SELECT Date FROM Ticket WHERE No = ? AND  Date = ?', [user_no,book_date], function (err, rows) {
                         if(rows!=''){
-                            res.send({ msg: "您已經預訂過囉。"});
+                            return res.send({ msg: "您已經預訂過囉。"});
                         }else if(book_date==arrary_date[5] &&  arrary_count[5]==500){// 500為自訂的入園人數
-                            res.send({ msg: "當天預定人數已經額滿，請擇日選擇。"});
+                            return res.send({ msg: "當天預定人數已經額滿，請擇日選擇。"});
                         }
                     })
-                    
                 }
+                return res.send({ msg: "OK"});
             }
         })
     })
@@ -312,6 +314,7 @@ exports.facility_appt_errorMsg = function (req, res) {
     var time=req.body.time;
     var status=req.body.status;
     var user_no=req.cookies.information.no;
+    console.log(date,time,status,user_no);
     req.getConnection(function (err, connection) {
         if(status=="add"){
             var facility_no=req.body.facility_no;
@@ -320,7 +323,7 @@ exports.facility_appt_errorMsg = function (req, res) {
                     errorPrint("Error Selecting（routes：/user/facility_appt/error_msg）: %s ", err,res);
                 } else{
                     if(rows!=''){
-                        res.send({ msg: "您已重複預約。" });
+                        return res.send({ msg: "您已重複預約。" });
                     }else{
                         connection.query("SELECT Available_PER FROM Facility WHERE No = ? ", [facility_no], function (err, rows) {
                             if (err) {
@@ -332,7 +335,7 @@ exports.facility_appt_errorMsg = function (req, res) {
                                         errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err,res);
                                     }else{
                                         if(rows[0].Count==available_PER){
-                                            res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
+                                            return res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
                                         }
                                     }
                                 })
@@ -359,7 +362,7 @@ exports.facility_appt_errorMsg = function (req, res) {
                                     errorPrint("Error Selecting（routes：/admin/member_tickets）: %s ", err,res);
                                 }else{
                                     if(rows[0].Count==available_PER){
-                                        res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
+                                        return res.send({ msg: "十分抱歉，預約人數已達上限，請更改預約時段/設施。" });
                                     }
                                 }
                             })
@@ -368,6 +371,7 @@ exports.facility_appt_errorMsg = function (req, res) {
                 }
             })
         }
+        return res.send({ msg: "OK"});
     })
 }
 

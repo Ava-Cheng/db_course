@@ -159,28 +159,54 @@ exports.errorMsg = function (req, res) {
     var email = req.body.email;
     var no = req.body.no;
     var status = req.body.status;
+    var identity=req.body.identity;
+    console.log(email,no,status,identity);
     req.getConnection(function (err, connection) {
-        if(status=="reg"){
-            //依據email撈出User用來檢查是否有重複註冊
-            connection.query("SELECT * FROM User WHERE email =?", [email], function (err, rows) {
-                if (err) {
-                    errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err,res);
-                } 
-                if (rows[0] != undefined) {
-                    res.send({ msg: "此帳號已存在，請直接登入。" });
-                }
-            })
+        if(identity=='user'){
+            if(status=="reg"){
+                //依據email撈出User用來檢查是否有重複註冊
+                connection.query("SELECT * FROM User WHERE email =?", [email], function (err, rows) {
+                    if (err) {
+                        errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err,res);
+                    } 
+                    if (rows[0] != undefined) {
+                        return res.send({ msg: "此帳號已存在，請直接登入。" });
+                    }
+                })
+            }else{
+                //依據email撈出User用來檢查是否有重複註冊
+                connection.query("SELECT * FROM User WHERE email =? AND No!=?", [email,no], function (err, rows) {
+                    if (err) {
+                        errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err,res);
+                    } 
+                    if (rows[0] != undefined) {
+                        return res.send({ msg: "此帳號已存在，請直接登入。" });
+                    }
+                })
+            }
         }else{
-            //依據email撈出User用來檢查是否有重複註冊
-            connection.query("SELECT * FROM User WHERE email =? AND No!=?", [email,no], function (err, rows) {
-                if (err) {
-                    errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err,res);
-                } 
-                if (rows[0] != undefined) {
-                    res.send({ msg: "此帳號已存在，請直接登入。" });
-                }
-            })
+            if(status=="reg"){
+                //依據email撈出User用來檢查是否有重複註冊
+                connection.query("SELECT * FROM Admin WHERE email =?", [email], function (err, rows) {
+                    if (err) {
+                        errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err,res);
+                    } 
+                    if (rows[0] != undefined) {
+                        return res.send({ msg: "此帳號已存在，請直接登入。" });
+                    }
+                })
+            }else{
+                //依據email撈出User用來檢查是否有重複註冊
+                connection.query("SELECT * FROM Admin WHERE email =? AND No!=?", [email,no], function (err, rows) {
+                    if (err) {
+                        errorPrint("Error Selecting（routes：/reg/error_msg）: %s ", err,res);
+                    } 
+                    if (rows[0] != undefined) {
+                        return res.send({ msg: "此帳號已存在，請直接登入。" });
+                    }
+                })
+            }
         }
-        
+        return res.send({ msg: "OK" });
     })
 }

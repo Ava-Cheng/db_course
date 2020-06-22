@@ -24,15 +24,17 @@ function user_error_msg(frm,data){
         cache: false,
         timeout: 60,
         success: function (msg) {
-            if(msg.msg=="此帳號已存在，請直接登入。" || msg.msg=="此帳號不存在，請前往註冊。" || msg.msg=="密碼輸入錯誤，請再次確認。"){
+            if(msg.msg=="OK"){
+                $("#errorMsg").html("");
+                frm.submit();
+            }else if(msg.msg=="此帳號已存在，請直接登入。" || msg.msg=="此帳號不存在，請前往註冊。" || msg.msg=="密碼輸入錯誤，請再次確認。"){
                 alert(msg.msg);
             }else{
                 $("#errorMsg").html(msg.msg);
             } 
         },
         error: function (error) {
-            $("#errorMsg").html("");
-            frm.submit();
+            console.log(error);
         }
     })
 }
@@ -50,15 +52,17 @@ function check_ticket_num(user_no){
         cache: false,
         timeout: 60,
         success: function (msg) {
-            if(msg.msg=="當天預定人數已經額滿，請擇日選擇。" || msg.msg=="您已經預訂過囉。"){
+            if(msg.msg=="OK"){
+                $("#errorMsg").html("");
+                frm.submit();
+            }else if(msg.msg=="當天預定人數已經額滿，請擇日選擇。" || msg.msg=="您已經預訂過囉。"){
                 alert(msg.msg);
             }else{
                 $("#errorMsg").html(msg.msg);
             } 
         },
         error: function (error) {
-            $("#errorMsg").html("");
-            frm.submit();
+            console.log(error);
         }
     })
 }
@@ -105,7 +109,10 @@ function facility_appt_error_msg(status){
         cache: false,
         timeout: 60,
         success: function (msg) {
-            if(status=="add"){
+            if(msg.msg=="OK"){
+                $("#errorMsg").html("");
+                frm.submit();
+            }else if(status=="add"){
                 if(msg.msg=="您已重複預約。" || msg.msg=="十分抱歉，預約人數已達上限，請更改預約時段/設施。"){
                     alert(msg.msg);
                 }
@@ -116,7 +123,7 @@ function facility_appt_error_msg(status){
             }
         },
         error: function (error) {
-            frm.submit();
+            console.log(error);
         }
     })
 }

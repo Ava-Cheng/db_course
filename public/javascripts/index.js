@@ -18,7 +18,7 @@ function go_facility_information(){
 
 function data_list(name,info,images_name){
     // 動態更改設施資訊
-    $("#info_view").val("        "+info);
+    $("#info_view").val("    "+info);
     // 動態更改設施名稱
     $("#facility_name").val(name);
     // 動態更改設施圖片
