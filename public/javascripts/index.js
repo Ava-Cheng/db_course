@@ -23,6 +23,9 @@ function data_list(name,info,images_name){
     $("#facility_name").val(name);
     // 動態更改設施圖片
     var facility_view = document.getElementById("facility_view");
+    if(images_name==""){
+        images_name="no_images.png";
+    }
     facility_view.src ="/images/facility/"+images_name;
     //顯示詳細資訊
     $("#right").show();
