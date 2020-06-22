@@ -5,3 +5,4 @@ node_modules
 package-lock.json
 # 設施圖片不要上傳
 ./public/images/facility/*
+!./public/images/facility/no_images.png
