@@ -6,3 +6,5 @@ package-lock.json
 # 設施圖片不要上傳
 public/images/facility/*
 !no_images.png
+# log檔案
+nohup.out
